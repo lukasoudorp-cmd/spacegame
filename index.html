@@ -18,6 +18,7 @@
         <button data-page="contracts" class="nav-button"><span data-icon="briefcase"></span>Contracts<span id="navOfferCount" class="nav-count">5</span></button>
         <button data-page="fleet" class="nav-button"><span data-icon="satellite"></span>My fleet</button>
         <button data-page="upgrades" class="nav-button"><span data-icon="layers"></span>Research</button>
+        <button data-page="objectives" class="nav-button"><span data-icon="check"></span>Objectives<span id="navGoalCount" class="nav-count" hidden>0</span></button>
         <button data-page="company" class="nav-button"><span data-icon="chart"></span>Company</button>
         <button data-page="log" class="nav-button"><span data-icon="activity"></span>Activity log</button>
       </nav>
@@ -43,6 +44,7 @@
         <div class="page-heading"><div><p class="eyebrow" id="pageEyebrow">ORBITAL OPERATIONS</p><h1 id="pageTitle">The world within reach.</h1><p id="pageDescription">Choose a contract. Put your satellite to work.</p></div><div class="time-controls"><span id="missionClock">00:00:00</span><button id="pauseButton" class="icon-button" aria-label="Pause game" title="Pause"><span data-icon="pause"></span></button><button id="speedButton" class="small-button" aria-label="Change game speed">1×</button></div></div>
 
         <section id="page-operations" class="page active" aria-label="Mission control">
+          <div id="nextObjective" class="objective-directive"></div>
           <div class="operations-grid">
             <div class="map-panel panel">
               <div class="map-top"><div><span class="live-dot"></span><strong>EARTH</strong><span class="map-coordinate" id="mapCoordinates">20° N · 15° E</span></div><div class="segmented" aria-label="Map view"><button id="globeButton" class="selected" aria-pressed="true">Globe</button><button id="flatButton" aria-pressed="false">World map</button></div></div>
@@ -68,13 +70,14 @@
           <div id="activeMissions" class="active-missions"></div>
         </section>
 
-        <section id="page-contracts" class="page" aria-label="Contracts" hidden><div class="section-heading"><h2>Available assignments</h2><button id="refreshContracts" class="outline-button">Refresh offers <span data-icon="refresh"></span></button></div><div id="contractsList" class="card-grid"></div><div class="section-heading"><h2>Active assignments</h2></div><div id="contractsActive" class="active-missions"></div></section>
+        <section id="page-contracts" class="page" aria-label="Contracts" hidden><div class="info-banner"><span data-icon="bolt"></span><p>Quick scans free your satellite sooner. Long-term contracts unlock after 5 completions. Match a satellite specialty for +20% reward and 15% less time. Card estimates use a Scout-1; your briefing shows the exact quote.</p></div><div class="section-heading"><h2>Available assignments</h2><button id="refreshContracts" class="outline-button">Refresh offers <span data-icon="refresh"></span></button></div><div id="contractsList" class="card-grid"></div><div class="section-heading"><h2>Active assignments</h2></div><div id="contractsActive" class="active-missions"></div></section>
         <section id="page-fleet" class="page" aria-label="Fleet and shop" hidden><div class="section-heading"><h2>Your satellites</h2><span class="subtle" id="fleetCount"></span></div><div id="satellitesList" class="card-grid"></div><div class="section-heading shop-heading"><div><p class="eyebrow">EXPAND YOUR REACH</p><h2>Buy satellites</h2></div></div><div id="shopList" class="card-grid"></div></section>
         <section id="page-upgrades" class="page" aria-label="Research" hidden><div class="info-banner"><span data-icon="layers"></span><p>Upgrades apply to your entire fleet. Processing and communication upgrades take effect when a new contract starts.</p></div><div id="upgradesList" class="card-grid"></div></section>
-        <section id="page-company" class="page" aria-label="Company" hidden><div id="companyOverview"></div><div class="panel settings-panel"><h2>Manage game</h2><p>Your progress is saved on this device. A game month lasts 30 game minutes. The simulation stops when paused or when the tab is hidden.</p><div class="settings-actions"><button class="outline-button" id="saveButton">Save now</button><button class="danger-button" id="newGameButton">Start a new game</button></div></div></section>
+        <section id="page-objectives" class="page" aria-label="Objectives" hidden><div class="info-banner"><span data-icon="check"></span><p>Build your company one milestone at a time. Unlocks become available as soon as you reach their goal. Claim each cash and research reward once.</p></div><div id="objectivesList" class="card-grid"></div></section>
+        <section id="page-company" class="page" aria-label="Company" hidden><div id="companyOverview"></div><div class="panel settings-panel"><h2>Save & transfer</h2><p>Your progress is saved on this device. Export a save to keep a backup or move to another device. Importing keeps a local backup of the game you replace.</p><div class="settings-actions"><button class="outline-button" id="saveButton">Save now</button><button class="outline-button" id="exportSaveButton">Export save</button><button class="outline-button" id="importSaveButton">Import save</button><button class="outline-button" id="restoreSaveButton" hidden>Restore previous save</button></div><input id="importSaveInput" type="file" accept=".json,application/json" aria-label="Choose an Orbit Pact save" hidden></div><div class="panel settings-panel"><h2>Manage game</h2><p>A game month lasts 30 game minutes. The simulation stops when paused or when the tab is hidden. Starting over replaces your current company.</p><button class="danger-button" id="newGameButton">Start a new game</button></div></section>
         <section id="page-log" class="page" aria-label="Activity log" hidden><div class="section-heading"><h2>Activity</h2><button class="text-button" id="clearLogButton">Clear activity log</button></div><div id="logList" class="panel log-list"></div></section>
       </main>
-      <footer><span><span class="live-dot" id="systemDot"></span><span id="systemStatus">SYSTEMS OPERATIONAL</span></span><span id="saveStatus">Progress saved on this device</span><span>ORBIT PACT <span class="version">/ 2.0</span></span></footer>
+      <footer><span><span class="live-dot" id="systemDot"></span><span id="systemStatus">SYSTEMS OPERATIONAL</span></span><span id="saveStatus">Progress saved on this device</span><span>ORBIT PACT <span class="version">/ 2.1</span></span></footer>
     </div>
   </div>
   <dialog id="detailDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><p class="eyebrow" id="dialogEyebrow">MISSION BRIEFING</p><button class="icon-button" id="closeDialog" aria-label="Close">×</button></div><h2 id="dialogTitle"></h2><div id="dialogBody"></div><div id="dialogActions" class="dialog-actions"></div></dialog>
@@ -87,10 +90,10 @@
   <script src="js/satellites.js"></script>
   <script src="js/upgrades.js"></script>
   <script src="js/contracts.js"></script>
+  <script src="js/objectives.js"></script>
   <script src="js/save.js"></script>
   <script src="js/map.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/game.js"></script>
 </body>
 </html>
-

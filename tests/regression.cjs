@@ -17,7 +17,7 @@ const c=vm.createContext({console,Date,Math,Map,Set,Intl,Number,Object,Array,JSO
   ResizeObserver:class{observe(){}},
   localStorage:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)}
 });
-for(const f of ['vendor/d3.min.js','js/world-data.js','js/locale.js','js/config.js','js/satellites.js','js/upgrades.js','js/contracts.js','js/save.js','js/map.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),c,{filename:f});
+for(const f of ['vendor/d3.min.js','js/world-data.js','js/locale.js','js/config.js','js/satellites.js','js/upgrades.js','js/contracts.js','js/objectives.js','js/save.js','js/map.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),c,{filename:f});
 vm.runInContext('class UISystem {constructor(game){this.game=game;this.page="operations";}init(){}render(){}updateLive(){}toast(){}selectCountry(){}navigate(){}}',c);
 vm.runInContext(fs.readFileSync(path.join(root,'js/game.js'),'utf8'),c,{filename:'js/game.js'});
 const run=source=>vm.runInContext(source,c);
@@ -113,5 +113,60 @@ test('Dutch activity logs translate once while saved mission progress is preserv
   for(const key of ['money','satellites','activeContracts','offers','upgrades','playTime'])assert.deepEqual(after[key],before[key],key);
   run('saveSystem.save(saveSystem.load());');
   assert.deepEqual(JSON.parse(memory.get('spaceCorp_save_v2')).log,after.log);
+});
+test('Specialists unlock after three completions and reward only matching work',()=>{
+  fresh();run('game.state.money=1000000;const beforeLocked=JSON.stringify(game.state);');
+  assert.equal(run('game.buySatellite("Relay-1")'),false);assert.equal(run('JSON.stringify(game.state)===beforeLocked'),true);
+  run('game.state.completedContracts=3;game.buySatellite("Relay-1");const relay=game.state.satellites[1];const communicationOffer={...game.state.offers[0],typeIndex:3};const generalQuote=contractSystem.quote(game.state,communicationOffer);const relayQuote=contractSystem.quote(game.state,communicationOffer,relay);');
+  assert.equal(run('relayQuote.specialtyMatch'),true);near(run('relayQuote.reward'),run('Math.round(generalQuote.reward*1.2)'));
+  assert.ok(run('relayQuote.duration<generalQuote.duration'));assert.equal(run('relayQuote.cost===generalQuote.cost'),true);
+  assert.equal(run('contractSystem.quote(game.state,{...communicationOffer,typeIndex:0},relay).specialtyMatch'),false);
+  assert.equal(run('contractSystem.specialtyMatch({type:"Advanced-1"},communicationOffer)'),true);
+});
+test('Offers include quick and standard work, then unlock longer commitments',()=>{
+  fresh();assert.equal(run('game.state.offers.some(c=>c.mode==="quick")'),true);assert.equal(run('game.state.offers.some(c=>c.mode==="standard")'),true);assert.equal(run('game.state.offers.some(c=>c.mode==="extended")'),false);
+  run('game.state.completedContracts=5;contractSystem.generate(game.state);');
+  assert.equal(run('game.state.offers.some(c=>c.mode==="extended")'),true);
+  assert.equal(run('game.state.offers.find(c=>c.mode==="quick").baseDuration<game.state.offers.find(c=>c.mode==="standard").baseDuration'),true);
+  assert.equal(run('game.state.offers.find(c=>c.mode==="extended").baseDuration>game.state.offers.find(c=>c.mode==="standard").baseDuration'),true);
+  assert.equal(run('game.state.offers.every(c=>c.baseReward>c.baseCost)'),true);
+});
+test('Accepted specialty and long-term quotes stay fixed after upgrades and reloads',()=>{
+  fresh();run('game.state.money=1000000;game.state.completedContracts=5;game.buySatellite("Relay-1");contractSystem.generate(game.state);const extended=game.state.offers.find(c=>c.mode==="extended");extended.typeIndex=3;contractSystem.accept(game.state,extended.id,2);const frozenMission=JSON.stringify(game.state.activeContracts[0]);game.state.upgrades.resolution=5;game.state.upgrades.processing=5;saveSystem.save(game.state);');
+  const mission=JSON.parse(run('frozenMission')),loaded=run('saveSystem.load().activeContracts[0]');
+  for(const key of ['reward','cost','duration','mode','specialtyMatch'])assert.equal(loaded[key],mission[key],key);
+});
+test('Objective rewards are granted once, including after a save transfer',()=>{
+  fresh();assert.equal(run('objectiveSystem.claim(game.state,"first_signal").success'),undefined);
+  run('game.state.completedContracts=1;const goalMoney=game.state.money;const earnedBeforeGoal=game.state.totalMoneyEarned;');
+  assert.equal(run('game.claimObjective("first_signal")'),true);near(run('game.state.money-goalMoney'),15000);
+  assert.equal(run('game.state.totalMoneyEarned'),run('earnedBeforeGoal'));assert.equal(run('game.claimObjective("first_signal")'),false);
+  run('game.state=saveSystem.parseImport(saveSystem.exportText(game.state));');assert.equal(run('game.claimObjective("first_signal")'),false);
+});
+test('New objectives preserve older saves and count each served country once',()=>{
+  fresh();run('game.state.completedContracts=8;game.state.history=[{id:99,typeIndex:0,countryId:"NLD",reward:100,profit:50,time:1}];const oldExpansionSave=JSON.parse(JSON.stringify(game.state));delete oldExpansionSave.servedCountries;delete oldExpansionSave.claimedObjectives;game.state=saveSystem.validate(oldExpansionSave);');
+  assert.equal(run('game.state.completedContracts'),8);assert.equal(run('objectiveSystem.next(game.state).id'),'first_signal');assert.equal(run('game.state.servedCountries.join(",")'),'NLD');
+  run('contractSystem.generate(game.state,"NLD");contractSystem.accept(game.state,game.state.offers[0].id,1);contractSystem.update(game.state,999999);');assert.equal(run('game.state.servedCountries.length'),1);
+});
+test('Invalid imports reject before touching the current game or its saved copy',()=>{
+  fresh();run('saveSystem.save(game.state);');const before=memory.get('spaceCorp_save_v2'),stateBefore=run('JSON.stringify(game.state)');
+  for(const text of ['{bad','null','[]','{"version":9}','{"format":"different-game","formatVersion":1}', 'x'.repeat(2*1024*1024+1)])assert.throws(()=>run(`saveSystem.parseImport(${JSON.stringify(text)})`));
+  run('const invalidMission=JSON.parse(JSON.stringify(game.state));invalidMission.activeContracts=[null];');assert.throws(()=>run('saveSystem.parseImport(JSON.stringify(invalidMission))'));
+  assert.equal(memory.get('spaceCorp_save_v2'),before);assert.equal(run('JSON.stringify(game.state)'),stateBefore);
+});
+test('Import keeps a recoverable backup and resumes in a paused state',()=>{
+  fresh();run('game.state.money=88888;const originalText=saveSystem.exportText(game.state);const incoming=saveSystem.parseImport(originalText);incoming.money=12345;');
+  const listenersBefore=listeners.length,framesBefore=frames;
+  assert.equal(run('game.importSave(incoming)'),true);assert.equal(run('game.state.money'),12345);assert.equal(run('game.state.paused'),true);
+  assert.equal(run('saveSystem.readBackup().money'),88888);assert.equal(run('saveSystem.load().money'),12345);
+  assert.equal(listeners.length,listenersBefore);assert.equal(frames,framesBefore);
+  assert.equal(run('game.importSave(saveSystem.readBackup())'),true);assert.equal(run('game.state.money'),88888);
+});
+test('Failed backup or import storage leaves the active company unchanged',()=>{
+  fresh();run('const beforeFailedImport=JSON.stringify(game.state);const originalSetItem=localStorage.setItem;localStorage.setItem=()=>{throw new Error("Storage full")};');
+  assert.equal(run('game.importSave(saveSystem.fresh())'),false);assert.equal(run('JSON.stringify(game.state)'),run('beforeFailedImport'));
+  run('localStorage.setItem=(key,value)=>{if(key===saveSystem.key)throw new Error("Storage full");originalSetItem(key,value);};');
+  assert.equal(run('game.importSave(game.state)'),false);assert.equal(run('JSON.stringify(game.state)'),run('beforeFailedImport'));
+  run('localStorage.setItem=originalSetItem;');
 });
 console.log(`\n${count} regression checks passed. Browser layout is not covered by these checks.`);

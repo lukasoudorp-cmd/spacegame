@@ -26,6 +26,29 @@ accept a contract. Receive its reward on completion.
 Each satellite can work on one contract at a time. Its class must meet
 the contract requirement. Class 1 offers remain available at higher levels.
 
+MISSION CHOICES AND SPECIALTIES
+Quick scans take half the standard time, with smaller rewards and start costs.
+Standard missions balance commitment and payout. Long-term contracts unlock
+at 5 completions: three times the duration, 3.4 times the reward and twice
+the start cost before upgrades. Refresh offers to find newly unlocked work.
+
+Match a satellite specialty to gain +20% reward and 15% less time:
+- Relay-1: communications support and maritime monitoring.
+- Nimbus-1: weather, environmental research and disaster monitoring.
+- Observer-1: mapping data, border mapping and strategic support.
+- Advanced-1: every contract category.
+Scout-1 remains a generalist. Every satellite may perform non-matching
+assignments if its class is sufficient; those assignments get no specialty bonus.
+Relay-1 and Nimbus-1 unlock after 3 completed contracts.
+The contract briefing lists matching satellites first and shows the exact quote.
+
+OBJECTIVES
+Open Objectives to track 7 milestones. Unlocks apply as soon as the goal is
+reached. Use Claim reward to collect each cash/research prize once.
+Objective cash does not count toward company-level contract revenue.
+Older saves are eligible for milestones based on their recorded progress.
+Countries served in older versions are reconstructed from the saved history.
+
 Contract profit = reward minus start cost, excluding fleet maintenance.
 A game month lasts 30 game minutes. Maintenance is charged according to
 elapsed game time. A Scout-1 costs EUR 500 per game month before upgrades.
@@ -59,7 +82,12 @@ can prevent progress from being retained after closing.
 Clearing browser data removes local saves. Another browser, website or
 local file location may use separate storage. Check the footer for save status.
 
-This English release keeps saves from the previous Dutch release,
+Use Company > Export save to download your current progress as JSON.
+Use Import save to preview and confirm a replacement game. Imports start
+paused and preserve your old game under Restore previous save. Invalid files
+do not replace your company. Keep an exported file if you clear browser data.
+
+This release keeps saves from the previous English and Dutch releases,
 including money, satellites, active contracts and upgrades. Old activity
 messages are translated when loaded. The internal save keys stay unchanged.
 
@@ -82,6 +110,7 @@ js/ui.js                 Interface, dialogs and interaction
 js/map.js                Globe, world map and controls
 js/world-data.js         Bundled Natural Earth boundaries
 js/locale.js             English names and old activity-message translation
+js/objectives.js         Milestones, unlock progress and one-time rewards
 vendor/d3.min.js         Bundled D3 7.9.0
 vendor/D3-LICENSE.txt    D3 license
 tests/regression.cjs    Node.js regression checks

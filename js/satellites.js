@@ -1,5 +1,7 @@
 'use strict';
 const satelliteSystem = {
+  isUnlocked(state,type) {const def=CONFIG.satelliteTypes[type];return Boolean(def)&&state.completedContracts>=(def.unlockContracts||0);},
+  specialty(type) {return CONFIG.specialties[CONFIG.satelliteTypes[type].specialty];},
   create(state,type) {
     if(!CONFIG.satelliteTypes[type])throw new Error('Unknown satellite type');
     const id=state.nextSatelliteId++;
@@ -18,4 +20,3 @@ const satelliteSystem = {
   repairCost(sat){return Math.ceil((100-sat.health)*CONFIG.satelliteTypes[sat.type].price*.001);},
   position(sat,time){const angle=(sat.phase+time/180000)*Math.PI*2;return [((angle*180/Math.PI+180)%360)-180,Math.sin(angle+sat.id)* (38+(sat.id%4)*9)];}
 };
-

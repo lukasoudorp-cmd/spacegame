@@ -1,8 +1,17 @@
-# Orbit Pact
+# Orbit Pact 2.1
 
 Build a satellite company, complete contracts and expand your fleet.
 
 [Play Orbit Pact](https://lukasoudorp-cmd.github.io/spacegame/)
+
+## New in 2.1
+
+- Satellite specialties: matching assignments earn +20% reward and take 15% less time.
+- Relay-1 and Nimbus-1 unlock after 3 completed contracts.
+- Quick scans and standard missions, plus long-term contracts after 5 completions.
+- Seven objectives with one-time cash and research rewards.
+- Export/import JSON saves in Company, with a local pre-import backup and restore.
+- Existing saves and active mission quotes remain compatible.
 
 ## Play offline
 
@@ -12,6 +21,7 @@ Download and extract the entire repository, then open `index.html` in Chrome. Ke
 
 - `index.html` and `style.css`: interface and layout.
 - `js/`: game rules, saves, world map and controls.
+- `js/objectives.js`: progress tracking and one-time milestone rewards.
 - `js/locale.js`: English country names and migration of Dutch activity messages.
 - `vendor/`: bundled D3 library and its license.
 - `tests/regression.cjs`: game logic, map projection and save compatibility checks.
