@@ -45,7 +45,18 @@ class WorldMap {
     const ocean=ctx.createLinearGradient(w*.3,h*.1,w*.8,h*.9);ocean.addColorStop(0,'#163449');ocean.addColorStop(1,'#081728');ctx.beginPath();this.path({type:'Sphere'});ctx.fillStyle=ocean;ctx.fill();ctx.strokeStyle='#4b7891';ctx.lineWidth=.8;ctx.stroke();
     ctx.beginPath();this.path(this.graticule);ctx.strokeStyle='#56869e2e';ctx.lineWidth=.55;ctx.stroke();
     WORLD_DATA.features.forEach((f,i)=>{ctx.beginPath();this.path(f);ctx.fillStyle=f.id===this.selected?'#529f8e':f.id===this.hover?.id?'#416776':['#243f4c','#2a4652','#2d4b56','#284350'][i%4];ctx.fill();ctx.strokeStyle=f.id===this.selected?'#aaf6d1':'#6992a17a';ctx.lineWidth=f.id===this.selected?1.2:.55;ctx.stroke();});
-    if(this.mode==='globe'){ctx.save();ctx.beginPath();this.path({type:'Sphere'});ctx.clip();const shade=ctx.createRadialGradient(w*.37,h*.34,this.radius*.1,w*.59,h*.58,this.radius*1.23);shade.addColorStop(0,'#06111b00');shade.addColorStop(.68,'#020b1233');shade.addColorStop(1,'#010710d0');ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);ctx.restore();}
+    if(this.mode==='globe'){
+      ctx.save();ctx.beginPath();this.path({type:'Sphere'});ctx.clip();
+      // Concentric circles keep the gradient smooth at every viewport size and zoom.
+      // Only shade the rim, so country details remain visible across the globe.
+      const [cx,cy]=this.projection.translate();
+      const shade=ctx.createRadialGradient(cx,cy,0,cx,cy,this.radius);
+      shade.addColorStop(0,'rgba(2,11,18,0)');
+      shade.addColorStop(.65,'rgba(2,11,18,0)');
+      shade.addColorStop(.88,'rgba(2,11,18,0.08)');
+      shade.addColorStop(1,'rgba(2,11,18,0.22)');
+      ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);ctx.restore();
+    }
     // Sparse geographical labels, grounded in real coordinates.
     const labels=[['NOORD-AMERIKA',[-105,42]],['ZUID-AMERIKA',[-60,-15]],['EUROPA',[19,52]],['AFRIKA',[18,5]],['AZIË',[90,41]],['AUSTRALIË',[134,-25]]];
     ctx.font='12px Consolas, monospace';ctx.textAlign='center';ctx.fillStyle='#bdd5dfaa';for(const [name,ll] of labels){if(!this.visible(ll))continue;const p=this.projection(ll);if(p&&p[0]>40&&p[0]<w-40&&p[1]>80&&p[1]<h-70)ctx.fillText(name,p[0],p[1]);}
