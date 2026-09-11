@@ -42,6 +42,12 @@ class UISystem{
     bind('closeDialog',()=>this.dialog.close());this.dialog.addEventListener('click',e=>{if(e.target===this.dialog){const r=this.dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)this.dialog.close();}});
     this.dialog.addEventListener('close',()=>{this.openOffer=null;});bind('helpButton',()=>this.showHelp());bind('newGameButton',()=>this.confirmNewGame());
     bind('saveButton',()=>{const success=this.game.save();this.toast(success?'Your progress has been saved.':'Your browser cannot save your progress.',!success);});
+    bind('cloudCreateButton',()=>this.cloudAction(async()=>{await cloudSystem.create(this.state);this.showCloudCode();}));
+    bind('cloudUploadButton',()=>this.cloudAction(async()=>{await cloudSystem.upload(this.state);this.toast('Your company is saved online.');}));
+    bind('cloudOpenButton',()=>this.enterCloudCode());
+    bind('cloudLoadButton',()=>this.previewCloudSave());
+    bind('cloudCodeButton',()=>this.showCloudCode());
+    bind('cloudDisconnectButton',()=>this.disconnectCloud());
     bind('exportSaveButton',()=>this.exportSave());
     bind('importSaveButton',()=>document.getElementById('importSaveInput').click());
     document.getElementById('importSaveInput').addEventListener('change',e=>{const file=e.target.files[0];e.target.value='';if(file)this.previewImport(file);});
@@ -119,6 +125,7 @@ class UISystem{
     document.querySelectorAll('[data-price]').forEach(el=>{el.disabled=Boolean(el.dataset.maxed)||Boolean(el.dataset.locked)||s.money<Number(el.dataset.price)||s.research<Number(el.dataset.research||0);if(el.dataset.locked)el.title='Complete 3 contracts to unlock this satellite.';else if(el.disabled&&!el.dataset.maxed)el.title=s.money<Number(el.dataset.price)?'Not enough funds':'Not enough research points';else el.title='';});
     document.querySelectorAll('[data-action="repair"]').forEach(el=>{const sat=s.satellites.find(v=>v.id===Number(el.dataset.id));if(!sat)return;const cost=satelliteSystem.repairCost(sat);el.textContent=`Repair · ${Utils.money(cost)}`;el.disabled=sat.activeContract!==null||sat.health>=99.99||s.money<cost;el.title=sat.activeContract!==null?'Wait for the contract to finish.':'';});
     document.querySelectorAll('[data-health]').forEach(el=>{const sat=s.satellites.find(v=>v.id===Number(el.dataset.health));if(sat)el.textContent=sat.health.toFixed(1)+'%';});document.querySelectorAll('[data-health-bar]').forEach(el=>{const sat=s.satellites.find(v=>v.id===Number(el.dataset.healthBar));if(sat)el.style.width=sat.health+'%';});
+    this.updateCloudStatus();
     document.getElementById('restoreSaveButton').hidden=!saveSystem.hasBackup();
     if(this.openOffer&&this.dialog.open)this.updateQuote();
   }
@@ -142,6 +149,48 @@ class UISystem{
   }
   showSatellite(id){const sat=this.state.satellites.find(s=>s.id===id);if(!sat)return;const stats=satelliteSystem.stats(this.state,sat);this.openDialog(sat.name,`<p>${stats.description}</p><p class="specialty-note">${this.specialtyText(sat.type)}</p><div class="briefing"><div><span>Condition</span><strong>${sat.health.toFixed(1)}%</strong></div><div><span>Efficiency</span><strong>${Math.round(stats.efficiency*100)}%</strong></div><div><span>Coverage</span><strong>${stats.coverage}%</strong></div><div><span>Maintenance / game month</span><strong>${Utils.money(stats.maintenance)}</strong></div><div><span>Time in space</span><strong>${Utils.clock(sat.age)}</strong></div><div><span>Status</span><strong>${sat.activeContract!==null?'On mission':sat.health<=0?'Needs repair':'Available'}</strong></div></div><p>Higher efficiency reduces the duration of new contracts. Coverage and resolution increase their rewards. Repair your satellite as its condition declines.</p>`,'SATELLITE TELEMETRY');this.dialogButton('Close',()=>this.dialog.close());}
   showHelp(){this.openDialog('Your first mission.',`<ol class="help-list"><li>You start with <strong>€100,000 and one Scout-1</strong>. Choose a contract in mission control.</li><li>Assign your satellite and pay the start cost. The briefing shows the reward and duration for your chosen satellite.</li><li>Buy more satellites to work on multiple assignments at once. Matching specialties give +20% reward and 15% less time.</li><li>Complete Objectives and claim extra cash and research. Three contracts unlock Relay-1 and Nimbus-1. Five unlock long-term contracts.</li><li>Earn research points from contracts. Upgrade your fleet in Research.</li><li>Drag the globe, click countries or use the country selector. Find contracts in your chosen country.</li></ol><p>Use 3× to speed up the simulation. Pausing or hiding the tab stops game time. A game month lasts 30 game minutes. Your progress is saved in this browser. Export or import a save under Company to transfer it to another device.</p>`,'GETTING STARTED');this.dialogButton('Got it',()=>this.dialog.close(),true);}
+  updateCloudStatus(){
+    const connection=cloudSystem.connection,busy=Boolean(this.cloudBusy)||cloudSystem.busy;
+    const status=document.getElementById('cloudStatus');
+    const text=busy?'Connecting to your cloud save...':!connection?'No cloud save connected.':!connection.revision?'Recovery code created. Use Save online to finish your first upload.':`Last uploaded: ${new Date(connection.updatedAt).toLocaleString('en-GB')} · Revision ${connection.revision}`;
+    if(status.textContent!==text)status.textContent=text;
+    document.querySelectorAll('[data-cloud-action]').forEach(button=>button.disabled=busy);
+    document.getElementById('cloudCreateButton').hidden=Boolean(connection);
+    for(const id of ['cloudUploadButton','cloudLoadButton','cloudCodeButton','cloudDisconnectButton'])document.getElementById(id).hidden=!connection;
+    document.getElementById('cloudLoadButton').disabled=busy||!connection?.revision;
+  }
+  async cloudAction(action){
+    if(this.cloudBusy)return;this.cloudBusy=true;this.updateCloudStatus();
+    try{await action();}catch(e){this.toast(e.message||'The cloud action could not be completed.',true);}
+    finally{this.cloudBusy=false;this.updateCloudStatus();}
+  }
+  enterCloudCode(){
+    this.openDialog('Load your cloud save',`<p>Enter the recovery code from your other device. You can review the saved company before replacing this game.</p><label class="field-label" for="cloudCodeInput">Private recovery code</label><input id="cloudCodeInput" class="save-code-input" type="password" autocomplete="off" spellcheck="false" maxlength="90" placeholder="Paste your 64-character code"><p id="cloudCodeMessage" class="dialog-message" role="status"></p>`,'CLOUD SAVE');
+    this.dialogButton('Cancel',()=>this.dialog.close());
+    const button=this.dialogButton('Find save',()=>{button.disabled=true;this.previewCloudSave(document.getElementById('cloudCodeInput').value).finally(()=>button.disabled=false);},true);
+    document.getElementById('cloudCodeInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();button.click();}});
+    document.getElementById('cloudCodeInput').focus();
+  }
+  async previewCloudSave(code=cloudSystem.connection?.code){
+    return this.cloudAction(async()=>{
+      const snapshot=await cloudSystem.read(code),s=snapshot.state;
+      this.openDialog('Load this cloud save?',`<p>Your current company will be kept as a local backup. The loaded game starts paused.</p><div class="briefing"><div><span>Balance</span><strong>${Utils.money(s.money)}</strong></div><div><span>Satellites</span><strong>${s.satellites.length}</strong></div><div><span>Contracts completed</span><strong>${s.completedContracts}</strong></div><div><span>Play time</span><strong>${Utils.clock(s.playTime)}</strong></div></div><p>Saved ${new Date(snapshot.connection.updatedAt).toLocaleString('en-GB')}.</p>`,'CLOUD SAVE');
+      this.dialogButton('Cancel',()=>this.dialog.close());
+      this.dialogButton('Load save',()=>{try{if(cloudSystem.loadIntoGame(this.game,snapshot))this.dialog.close();}catch(e){this.toast('The save could not be stored on this device. Your current game is still active.',true);}},true);
+    });
+  }
+  showCloudCode(){
+    if(!cloudSystem.connection)return;
+    this.openDialog('Your recovery code',`<p>Keep a private copy of this code. Anyone with it can load or replace your cloud save. If you lose the code and clear this browser, the cloud save cannot be recovered.</p><label class="field-label" for="recoveryCode">Private recovery code</label><input id="recoveryCode" class="save-code-input" type="text" readonly autocomplete="off" spellcheck="false"><p class="subtle" style="margin-top:12px">On another device, open Company and choose Enter recovery code.</p>`,'CLOUD SAVE');
+    document.getElementById('recoveryCode').value=cloudSystem.connection.code;
+    this.dialogButton('Close',()=>this.dialog.close());
+    this.dialogButton('Copy code',async()=>{const input=document.getElementById('recoveryCode');try{await navigator.clipboard.writeText(input.value);this.toast('Recovery code copied. Keep it private.');}catch(e){input.focus();input.select();this.toast('Select and copy the code to keep it.');}},true);
+  }
+  disconnectCloud(){
+    this.openDialog('Disconnect this device?',`<p>Your local game and online save will stay intact. Keep your recovery code to connect to the cloud save again.</p>`,'CLOUD SAVE');
+    this.dialogButton('Cancel',()=>this.dialog.close());
+    this.dialogButton('Disconnect',()=>{try{cloudSystem.remember(null);this.dialog.close();this.updateCloudStatus();}catch(e){this.toast('This browser could not forget the cloud connection.',true);}});
+  }
   exportSave(){
     try{
       const blob=new Blob([saveSystem.exportText(this.state)],{type:'application/json'}),url=URL.createObjectURL(blob);

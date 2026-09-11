@@ -97,6 +97,23 @@ Old active assignments are released. Upgrade data and completed-contract
 counts that version 1 did not save cannot be recovered.
 The original version 1 storage entry is preserved.
 
+CLOUD SAVES
+Company > Create cloud save uploads your current company to Supabase.
+Keep the private recovery code shown after the first upload. Anyone with
+this code can load or replace that online save. The code cannot be recovered
+if you lose it and clear your browser data.
+
+Use Save online to update the cloud copy. Cloud uploads are manual.
+To continue on another device: open Company > Enter recovery code, paste
+your code, review the company and select Load save. Your local company is
+kept as a backup and the loaded game starts paused.
+
+If another device has saved a newer revision, load that cloud save before
+uploading again. Internet connection problems do not stop local gameplay.
+Disconnect this device keeps both the local company and its online copy.
+Recovery codes are not included in exported game JSON files. Store the code
+separately if you want to reconnect to the same cloud slot.
+
 PROJECT FILES
 index.html              Interface
 style.css               Styling and responsive layout
@@ -111,6 +128,9 @@ js/map.js                Globe, world map and controls
 js/world-data.js         Bundled Natural Earth boundaries
 js/locale.js             English names and old activity-message translation
 js/objectives.js         Milestones, unlock progress and one-time rewards
+js/cloud.js              Cloud save and recovery-code transfer
+js/cloud-config.js       Public Supabase connection settings
+supabase/               Backend schema and SQL verification
 vendor/d3.min.js         Bundled D3 7.9.0
 vendor/D3-LICENSE.txt    D3 license
 tests/regression.cjs    Node.js regression checks
