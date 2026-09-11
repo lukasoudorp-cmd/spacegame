@@ -17,7 +17,7 @@ const c=vm.createContext({console,Date,Math,Map,Set,Intl,Number,Object,Array,JSO
   ResizeObserver:class{observe(){}},
   localStorage:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)}
 });
-for(const f of ['vendor/d3.min.js','js/world-data.js','js/config.js','js/satellites.js','js/upgrades.js','js/contracts.js','js/save.js','js/map.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),c,{filename:f});
+for(const f of ['vendor/d3.min.js','js/world-data.js','js/locale.js','js/config.js','js/satellites.js','js/upgrades.js','js/contracts.js','js/save.js','js/map.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),c,{filename:f});
 vm.runInContext('class UISystem {constructor(game){this.game=game;this.page="operations";}init(){}render(){}updateLive(){}toast(){}selectCountry(){}navigate(){}}',c);
 vm.runInContext(fs.readFileSync(path.join(root,'js/game.js'),'utf8'),c,{filename:'js/game.js'});
 const run=source=>vm.runInContext(source,c);
@@ -87,5 +87,31 @@ test('Globe and flat projections render and invert correctly after mode changes'
 });
 test('Late-game offers always retain an entry-level contract',()=>{
   fresh();run('game.state.level=5;contractSystem.generate(game.state,"NLD")');assert.equal(run('game.state.offers[0].requiredQuality'),1);assert.equal(run('game.state.offers.every(c=>c.countryId==="NLD")'),true);
+});
+test('English country names keep country IDs and contract destinations intact',()=>{
+  assert.equal(run('Utils.country("NLD").properties.name'),'Netherlands');
+  assert.equal(run('Utils.country("USA").properties.name'),'United States');
+  assert.equal(run('WORLD_DATA.features.every(f=>typeof f.properties.name==="string"&&f.properties.name.length>0)'),true);
+  assert.equal(run('Utils.money(123456)'), '€123,456');
+  fresh();run('contractSystem.generate(game.state,"NLD");contractSystem.accept(game.state,game.state.offers[0].id,1);saveSystem.save(game.state);');
+  assert.equal(run('saveSystem.load().activeContracts[0].countryId'),'NLD');
+});
+test('Dutch activity logs translate once while saved mission progress is preserved',()=>{
+  fresh();run('contractSystem.accept(game.state,game.state.offers[0].id,1);contractSystem.update(game.state,12345);');
+  const messages=[
+    ['Welkom bij Space Corp. Je Scout-1 is klaar voor de eerste opdracht.','Welcome to Orbit Pact. Your Scout-1 is ready for its first assignment.'],
+    ['Weersobservatie voltooid. € 22.500 ontvangen; € 16.000 contractwinst.','Weather observation completed. €22,500 received; €16,000 contract profit.'],
+    ['Bedrijfslevel 2 bereikt: Ruimtevaartbedrijf.','Company level 2 reached: Space company.'],
+    ['Nieuw aanbod in Nederland.','New offers in Netherlands.'],
+    ['Communicatiesupport verbeterd naar niveau 2.','Communications support upgraded to level 2.']
+  ];
+  run(`game.state.log=${JSON.stringify(messages.map(([message],i)=>({message,time:i,type:'info'})))};saveSystem.save(game.state);`);
+  const before=JSON.parse(memory.get('spaceCorp_save_v2'));
+  run('const englishSave=saveSystem.load();saveSystem.save(englishSave);');
+  const after=JSON.parse(memory.get('spaceCorp_save_v2'));
+  assert.deepEqual(after.log.map(l=>l.message),messages.map(([,english])=>english));
+  for(const key of ['money','satellites','activeContracts','offers','upgrades','playTime'])assert.deepEqual(after[key],before[key],key);
+  run('saveSystem.save(saveSystem.load());');
+  assert.deepEqual(JSON.parse(memory.get('spaceCorp_save_v2')).log,after.log);
 });
 console.log(`\n${count} regression checks passed. Browser layout is not covered by these checks.`);

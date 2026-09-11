@@ -58,9 +58,9 @@ class WorldMap {
       ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);ctx.restore();
     }
     // Sparse geographical labels, grounded in real coordinates.
-    const labels=[['NOORD-AMERIKA',[-105,42]],['ZUID-AMERIKA',[-60,-15]],['EUROPA',[19,52]],['AFRIKA',[18,5]],['AZIË',[90,41]],['AUSTRALIË',[134,-25]]];
+    const labels=[['NORTH AMERICA',[-105,42]],['SOUTH AMERICA',[-60,-15]],['EUROPE',[19,52]],['AFRICA',[18,5]],['ASIA',[90,41]],['AUSTRALIA',[134,-25]]];
     ctx.font='12px Consolas, monospace';ctx.textAlign='center';ctx.fillStyle='#bdd5dfaa';for(const [name,ll] of labels){if(!this.visible(ll))continue;const p=this.projection(ll);if(p&&p[0]>40&&p[0]<w-40&&p[1]>80&&p[1]<h-70)ctx.fillText(name,p[0],p[1]);}
-    const lat=-this.rotation[1],lon=((-this.rotation[0]+540)%360)-180;document.getElementById('mapCoordinates').textContent=this.mode==='globe'?`${Math.abs(lat).toFixed(0)}° ${lat>=0?'N':'Z'} · ${Math.abs(lon).toFixed(0)}° ${lon>=0?'O':'W'}`:'WERELDOVERZICHT';this.dirty=false;
+    const lat=-this.rotation[1],lon=((-this.rotation[0]+540)%360)-180;document.getElementById('mapCoordinates').textContent=this.mode==='globe'?`${Math.abs(lat).toFixed(0)}° ${lat>=0?'N':'S'} · ${Math.abs(lon).toFixed(0)}° ${lon>=0?'E':'W'}`:'WORLD OVERVIEW';this.dirty=false;
   }
   draw(){if(!this.width||!this.height)return;if(this.dirty)this.renderBase();const ctx=this.ctx;ctx.clearRect(0,0,this.width,this.height);ctx.drawImage(this.base,0,0,this.width,this.height);const path=d3.geoPath(this.projection,ctx),state=this.game.state;
     const selectedOffers=state.offers.filter(c=>!this.selected||c.countryId===this.selected);const markers=new Map();for(const c of [...selectedOffers,...state.activeContracts])markers.set(c.countryId,state.activeContracts.includes(c));
@@ -76,3 +76,4 @@ class WorldMap {
     });
   }
 }
+

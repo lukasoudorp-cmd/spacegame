@@ -1,25 +1,26 @@
-KAARTGEGEVENS
-Natural Earth, Admin 0 Countries, schaal 1:110 miljoen.
-177 geografische features, met gegeneraliseerde kustlijnen en grenzen.
-Bron: https://github.com/nvkelso/natural-earth-vector
-Bestand: geojson/ne_110m_admin_0_countries.geojson
-Gedownload: 2026-09-10.
+MAP DATA
+Natural Earth, Admin 0 Countries, scale 1:110 million.
+177 geographic features with generalized coastlines and boundaries.
+Source: https://github.com/nvkelso/natural-earth-vector
+File: geojson/ne_110m_admin_0_countries.geojson
+Downloaded: 2026-09-10.
 Website: https://www.naturalearthdata.com/
-Gebruiksvoorwaarden: https://www.naturalearthdata.com/about/terms-of-use/
-Natural Earth-kaartgegevens zijn publiek domein.
-Nederlandse namen en labelcoordinaten komen uit dezelfde dataset.
-De grenzen volgen de brongegevens; kleine landen en eilanden zijn op deze
-schaal niet allemaal afzonderlijk zichtbaar.
+Terms: https://www.naturalearthdata.com/about/terms-of-use/
+Natural Earth map data is in the public domain.
+Label coordinates and original Dutch names come from the source dataset.
+js/locale.js supplies English display names without changing feature IDs.
+Boundaries follow the source; small countries and islands are not all
+individually visible at this scale.
 
-KAARTRENDERING
-D3.js 7.9.0, ISC-licentie.
+MAP RENDERING
+D3.js 7.9.0, ISC license.
 https://d3js.org/
 https://github.com/d3/d3
-De volledige meegeleverde licentie staat in vendor/D3-LICENSE.txt.
-Gebruikte projecties: geoOrthographic en geoNaturalEarth1.
-Alle bibliotheekbestanden zitten lokaal in deze game. Tijdens het spelen
-worden geen externe kaartdiensten of CDN-bestanden opgevraagd.
+The complete bundled license is in vendor/D3-LICENSE.txt.
+Projections: geoOrthographic and geoNaturalEarth1.
+Libraries and map data are bundled locally. Gameplay does not request
+external map services or CDN files.
 
 PROJECT
-Space Corp Manager, verbeterde versie van de aangeleverde browsergame.
-De interface gebruikt systeemlettertypen en ingebouwde lijniconen.
+Orbit Pact, an improved version of the supplied browser game.
+The interface uses system fonts and built-in line icons.

@@ -1,91 +1,93 @@
-SPACE CORP 2.0
-==============
+ORBIT PACT
+==========
 
-STARTEN OP JE CHROMEBOOK
-1. Pak de HELE zip uit. Bewaar de mappen js en vendor naast index.html.
-2. Open de map Space-Corp en open index.html met Chrome.
-3. Klik op een contract, wijs Scout-1 toe en start je eerste missie.
+GETTING STARTED
+1. Extract the entire download. Keep js and vendor next to index.html.
+2. Open index.html in Chrome.
+3. Choose a contract, assign Scout-1 and start your first mission.
 
-Je hebt geen installatie, account, API-sleutel of internet nodig.
-Alle JavaScript en kaartgegevens staan in deze map.
-Als je alleen index.html uit de zip opent zonder uit te pakken, ontbreken
-de andere bestanden en kan de game niet starten.
+No installation, account, API key or internet connection is required for
+the downloaded game. Opening index.html inside an unextracted zip will
+not load the other required files.
 
-BEDIENING
-- Sleep de aardbol om te draaien. Klik op een land voor het contractaanbod.
-- Gebruik de landkeuze naast de kaart om een land direct te selecteren.
-- Zoek met 'Nieuwe contracten zoeken' opdrachten voor het geselecteerde land.
-- Wissel tussen Aardbol en Wereldkaart met de knoppen boven de kaart.
-- Gebruik het muiswiel of plus/min om te zoomen. De middelste knop herstelt de kaart.
-- Op een aanraakscherm kun je met een vinger slepen en met plus/min zoomen.
-- Met de kaart geselecteerd: pijltjestoetsen bewegen, + en - zoomen, Home herstelt.
-- Met 3x versnel je de speeltijd. De pauzeknop zet de simulatie stil.
+CONTROLS
+- Drag the globe to rotate. Click a country to filter its contracts.
+- Use the country selector next to the map to select a country directly.
+- Choose "Find new contracts" to find offers for the selected country.
+- Switch between Globe and World map using the buttons above the map.
+- Use the mouse wheel or plus/minus buttons to zoom. The centre button resets.
+- On touchscreens, drag with one finger and use plus/minus to zoom.
+- With the map focused: arrow keys move, + and - zoom, Home resets.
+- Use 3x to speed up game time. The pause button stops the simulation.
 
-SPELREGELS
-Je begint met EUR 100.000 en een Scout-1. Contracten betalen een beloning
-na voltooiing. Je betaalt de startkosten bij het aannemen, eenmalig.
-Elke satelliet kan precies een contract tegelijk uitvoeren.
-De klasse van de satelliet moet hoog genoeg zijn voor het contract.
-Ook op hogere bedrijfslevels blijven contracten voor klasse 1 beschikbaar.
+GAME RULES
+Start with EUR 100,000 and one Scout-1. Pay the start cost once when you
+accept a contract. Receive its reward on completion.
+Each satellite can work on one contract at a time. Its class must meet
+the contract requirement. Class 1 offers remain available at higher levels.
 
-Contractwinst = beloning - startkosten, exclusief vlootonderhoud.
-Een spelmaand duurt 30 spelminuten. Onderhoud wordt naar verstreken
-speltijd berekend. Een Scout-1 kost standaard EUR 500 per spelmaand.
-Bij 3x snelheid lopen contracten, onderhoud en slijtage allemaal 3x sneller.
-Pauzeren of het tabblad verbergen stopt de simulatie. Er is geen offline inkomen.
-Satellietbanen zijn een spelvisualisatie, geen natuurkundige baansimulatie.
-De dekkingswaarde verhoogt beloningen; contracten hebben geen geografische blokkade.
+Contract profit = reward minus start cost, excluding fleet maintenance.
+A game month lasts 30 game minutes. Maintenance is charged according to
+elapsed game time. A Scout-1 costs EUR 500 per game month before upgrades.
+At 3x speed, contracts, maintenance and wear all advance three times faster.
+Pausing or hiding the tab stops the simulation. There is no offline income.
+Satellite paths are a game visualization, not a physical orbit simulation.
+Coverage increases rewards; contracts have no geographic restriction.
 
-Verbeteringen gelden voor alle huidige en toekomstige satellieten:
-- Resolutie: +10% beloning per niveau.
-- Dekking: +5 procentpunt dekking en +3% beloning per niveau.
-- Efficientie: -10% onderhoud en +4 procentpunt efficientie per niveau.
-  Hogere efficientie verkort de duur van nieuwe contracten.
-- Betrouwbaarheid: minder slijtage, gedeeld door 1 + 0,4 x niveau.
-- Verwerking: -8% contractduur per niveau.
-- Communicatie: -8% startkosten per niveau.
-Beloning, startkosten en duur staan vast zodra een contract begint.
+Upgrades affect all current and future satellites:
+- Resolution: +10% reward per level.
+- Coverage: +5 percentage points of coverage and +3% reward per level.
+- Efficiency: -10% maintenance and +4 percentage points of efficiency per level.
+  Higher efficiency reduces the duration of new contracts.
+- Reliability: wear divided by 1 + 0.4 x level.
+- Processing: -8% contract duration per level.
+- Communication: -8% start cost per level.
+Reward, start cost and duration are fixed when a contract starts.
 
-Onderzoekspunten verdien je met voltooide contracten. Iedere verbetering
-kost geld en onderzoekspunten. Elke categorie heeft vijf niveaus.
-De bedrijfslevels worden bereikt bij EUR 0, 100.000, 500.000, 2.000.000
-en 5.000.000 totale contractomzet. Het hoogste level is vijf.
+Completed contracts earn research points. Each upgrade costs money and
+research points. Each category has five levels.
+Company levels require total contract revenue of EUR 0, 100,000, 500,000,
+2,000,000 and 5,000,000. The maximum company level is five.
 
-OPSLAAN
-De game slaat automatisch lokaal op, elke 15 seconden en na aankopen,
-gestarte/voltooide contracten, upgrades en andere belangrijke wijzigingen.
-Bij het verlaten of verbergen van het tabblad wordt ook opgeslagen.
-Via Bedrijf kun je handmatig opslaan en een nieuw spel beginnen.
-Opslag hangt af van je browser. In een privevenster of als je browser
-lokale opslag blokkeert, kan je voortgang na sluiten verdwijnen.
-Wis je browsergegevens niet als je je voortgang wilt behouden.
-Een andere browser, andere website of het verplaatsen van lokale bestanden
-kan een andere opslaglocatie opleveren. Kijk onderaan of opslaan gelukt is.
+SAVING
+Progress saves locally every 15 seconds and after important actions,
+including purchases, upgrades and contract starts or completions.
+The game also saves when leaving or hiding the tab.
+Use Company to save manually or start a new game.
+Storage depends on your browser. Private browsing or blocked local storage
+can prevent progress from being retained after closing.
+Clearing browser data removes local saves. Another browser, website or
+local file location may use separate storage. Check the footer for save status.
 
-Een oude versie-1-save op dezelfde browserlocatie wordt indien aanwezig
-overgezet: saldo, satellieten, reputatie, onderzoek en totale omzet blijven.
-Oude actieve opdrachten worden vrijgegeven. Upgrades en voltooide
-contracttellers die de oude game niet opsloeg, zijn niet terug te halen.
-Het originele oude opslagitem blijft onaangeroerd als reservekopie.
+This English release keeps saves from the previous Dutch release,
+including money, satellites, active contracts and upgrades. Old activity
+messages are translated when loaded. The internal save keys stay unchanged.
 
-BESTANDEN
-index.html              De complete interface
-style.css               Vormgeving en aanpassing aan schermgrootte
-js/config.js            Spelbalans en definities
-js/game.js              Simulatie en acties
-js/contracts.js         Contractaanbod en afhandeling
-js/satellites.js         Vloot, onderhoud en baanposities
-js/upgrades.js           Onderzoek en verbeteringen
-js/save.js               Opslag, validatie en versie-1-migratie
-js/ui.js                 Interface, dialogen en interactie
-js/map.js                Aardbol, wereldkaart en kaartbediening
-js/world-data.js         Meegeleverde Natural Earth-landgrenzen
-vendor/d3.min.js         Meegeleverde D3 7.9.0
-vendor/D3-LICENSE.txt    Licentie van D3
-tests/regression.cjs    Controle van de spellogica met Node.js
-CREDITS.txt             Herkomst van kaartgegevens en bibliotheek
+Version 1 saves at the same browser location are imported if present:
+balance, satellites, reputation, research and total revenue are retained.
+Old active assignments are released. Upgrade data and completed-contract
+counts that version 1 did not save cannot be recovered.
+The original version 1 storage entry is preserved.
 
-TESTEN VOOR ONTWIKKELAARS
-Gebruik vanuit deze map: node tests/regression.cjs
-Deze tests controleren de spellogica en kaartprojecties; ze zijn geen
-visuele browsertest. Voor normaal spelen heb je Node.js niet nodig.
+PROJECT FILES
+index.html              Interface
+style.css               Styling and responsive layout
+js/config.js            Game balance and definitions
+js/game.js              Simulation and actions
+js/contracts.js         Contract offers and completion
+js/satellites.js         Fleet, maintenance and orbit positions
+js/upgrades.js           Research and upgrades
+js/save.js               Saving, validation and version 1 migration
+js/ui.js                 Interface, dialogs and interaction
+js/map.js                Globe, world map and controls
+js/world-data.js         Bundled Natural Earth boundaries
+js/locale.js             English names and old activity-message translation
+vendor/d3.min.js         Bundled D3 7.9.0
+vendor/D3-LICENSE.txt    D3 license
+tests/regression.cjs    Node.js regression checks
+CREDITS.txt             Data and library attribution
+
+DEVELOPER CHECKS
+Run from this folder: node tests/regression.cjs
+These checks cover game logic, map projections and save compatibility.
+They do not cover visual browser layout. Normal play does not need Node.js.

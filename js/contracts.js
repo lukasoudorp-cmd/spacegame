@@ -12,9 +12,9 @@ const contractSystem = {
   generate(state,countryId=null){state.offers=Array.from({length:5},(_,i)=>this.create(state,countryId,i));},
   quote(state,offer,satellite=null){const efficiency=satellite?satelliteSystem.stats(state,satellite).efficiency:.8;return {reward:Math.round(offer.baseReward*(1+state.upgrades.resolution*.1+state.upgrades.coverage*.03)),cost:Math.round(offer.baseCost*(1-state.upgrades.communication*.08)),duration:Math.round(offer.baseDuration*(1-state.upgrades.processing*.08)*(.8/efficiency))};},
   accept(state,id,satelliteId){
-    const offer=state.offers.find(c=>c.id===id);if(!offer)return {error:'Dit contract is niet meer beschikbaar.'};
-    const sat=satelliteSystem.available(state,offer.requiredQuality).find(s=>s.id===satelliteId);if(!sat)return {error:'Kies een beschikbare satelliet van de juiste klasse.'};
-    const quote=this.quote(state,offer,sat);if(state.money<quote.cost)return {error:'Onvoldoende geld voor de startkosten.'};
+    const offer=state.offers.find(c=>c.id===id);if(!offer)return {error:'This contract is no longer available.'};
+    const sat=satelliteSystem.available(state,offer.requiredQuality).find(s=>s.id===satelliteId);if(!sat)return {error:'Choose an available satellite of the required class.'};
+    const quote=this.quote(state,offer,sat);if(state.money<quote.cost)return {error:'Not enough funds for the start cost.'};
     const mission={...offer,...quote,satelliteId:sat.id,elapsed:0};
     state.money-=quote.cost;state.totalCosts+=quote.cost;sat.activeContract=offer.id;
     state.activeContracts.push(mission);state.offers=state.offers.filter(c=>c.id!==id);
@@ -29,3 +29,4 @@ const contractSystem = {
     state.history=state.history.slice(0,30);return completed;
   }
 };
+

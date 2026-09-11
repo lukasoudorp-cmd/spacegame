@@ -1,24 +1,27 @@
-# Space Corp 2.0
+# Orbit Pact
 
-Browsergame waarin je een satellietbedrijf opbouwt, contracten voltooit en je vloot verbetert.
+Build a satellite company, complete contracts and expand your fleet.
 
-## Spelen
+[Play Orbit Pact](https://lukasoudorp-cmd.github.io/spacegame/)
 
-Download de repository en open `index.html` in Chrome. Houd de mappen `js` en `vendor` bij de HTML. De game werkt ook offline.
+## Play offline
 
-## Online zetten
+Download and extract the entire repository, then open `index.html` in Chrome. Keep the `js` and `vendor` folders next to it. No installation or account is required.
 
-In GitHub: Settings → Pages → Deploy from a branch → main → /(root) → Save.
+## Development
 
-## Ontwikkeling
+- `index.html` and `style.css`: interface and layout.
+- `js/`: game rules, saves, world map and controls.
+- `js/locale.js`: English country names and migration of Dutch activity messages.
+- `vendor/`: bundled D3 library and its license.
+- `tests/regression.cjs`: game logic, map projection and save compatibility checks.
 
-- `index.html` en `style.css`: interface en vormgeving.
-- `js/`: spelregels, opslag, kaart en bediening.
-- `vendor/`: meegeleverde D3-bibliotheek.
-- `tests/regression.cjs`: 17 controles op spellogica en kaartprojecties.
+Run checks with Node.js: `node tests/regression.cjs`.
 
-Tests uitvoeren met Node.js: `node tests/regression.cjs`.
+Progress is stored in the browser. Keep the existing `spaceCorp_save_v2` and `spaceCorp_save` keys compatible so existing players retain their progress. Country IDs and contract type indices must remain stable.
 
-De voortgang wordt lokaal in de browser opgeslagen. Bewaar compatibiliteit met `spaceCorp_save_v2` bij toekomstige wijzigingen.
+## Publishing
 
-Zie `LEES-MIJ.txt` voor spelregels en bediening, en `CREDITS.txt` voor bronnen en licenties.
+GitHub Pages deploys from `main`, `/(root)`. Changes on that branch are published automatically. The repository name and game URL remain unchanged.
+
+See `LEES-MIJ.txt` for the English player guide and `CREDITS.txt` for sources and licenses.
