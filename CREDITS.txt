@@ -1,0 +1,25 @@
+KAARTGEGEVENS
+Natural Earth, Admin 0 Countries, schaal 1:110 miljoen.
+177 geografische features, met gegeneraliseerde kustlijnen en grenzen.
+Bron: https://github.com/nvkelso/natural-earth-vector
+Bestand: geojson/ne_110m_admin_0_countries.geojson
+Gedownload: 2026-09-10.
+Website: https://www.naturalearthdata.com/
+Gebruiksvoorwaarden: https://www.naturalearthdata.com/about/terms-of-use/
+Natural Earth-kaartgegevens zijn publiek domein.
+Nederlandse namen en labelcoordinaten komen uit dezelfde dataset.
+De grenzen volgen de brongegevens; kleine landen en eilanden zijn op deze
+schaal niet allemaal afzonderlijk zichtbaar.
+
+KAARTRENDERING
+D3.js 7.9.0, ISC-licentie.
+https://d3js.org/
+https://github.com/d3/d3
+De volledige meegeleverde licentie staat in vendor/D3-LICENSE.txt.
+Gebruikte projecties: geoOrthographic en geoNaturalEarth1.
+Alle bibliotheekbestanden zitten lokaal in deze game. Tijdens het spelen
+worden geen externe kaartdiensten of CDN-bestanden opgevraagd.
+
+PROJECT
+Space Corp Manager, verbeterde versie van de aangeleverde browsergame.
+De interface gebruikt systeemlettertypen en ingebouwde lijniconen.
