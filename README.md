@@ -1,8 +1,27 @@
-# Orbit Pact 2.4
+# Orbit Pact 3.0
 
 Build a satellite company, complete contracts and expand your fleet.
 
 [Play Orbit Pact](https://lukasoudorp-cmd.github.io/spacegame/)
+
+## New in 3.0: Orbital frontier
+
+New solo games are endless, with pause and 1x/2x/4x speed. Existing solo matches upgrade without losing the company. There is no revenue or time cutoff. Online lobbies still support 2–4 people, but new matches now end when a company holds 7 of 12 network regions continuously for 45 seconds. Existing v1 online rooms retain their old rules.
+
+- Click a country marker to connect a region (EUR 6,000 / 10 seconds). Each satellite supports two regions. Regions pay EUR 600 per level per 5 seconds, up to level 3.
+- After the 90-second opening truce, contest rivals' regions for EUR 12,000 + EUR 4,000 per defender level. You need more satellites than the region level; the takeover takes 20 seconds. The owner can defend for EUR 4,000 and gain 30 seconds of regional protection.
+- A research lab permits signal disruption for EUR 10,000. It suspends the target's network income for 20 seconds (10 with a defense building). Headquarters income continues. Attacks have a 60-second cooldown and the victim receives 60 seconds of immunity from further disruption.
+- A EUR 6,000 shield lasts 60 seconds, immediately restores disrupted signals and blocks new sabotage and new takeover attempts. Existing takeover attempts still need the Defend region action.
+- The isometric spaceport shows real buildings, cranes, service vehicles and launch animations. Sites support three building levels. Solar levels add power, pad levels shorten launch preparation and lab levels shorten contracts.
+- Scout, Relay and Mapper payloads add fleet capacity, passive income or contract bonuses. A level 2 factory, level 2 lab and six satellites unlock an orbital station, which adds EUR 2,000 income per level per 5 seconds.
+- Priority requests rotate every 90 seconds, with a 45-second acceptance window. Each company can take one per window. Bot difficulties change response speed, contract selection and sabotage behavior.
+- Inspect companies to see their actual spaceport. Company headquarters are labelled on the network map. Activity history and milestones track visible growth.
+
+Controls: World network / My spaceport tabs, clickable network markers (or the country dropdown), selectable building sites with keyboard support, and a payload choice in the spaceport inspector. Existing free play is available from the main menu.
+
+The server controls online time, balances, territory ownership, defenses and victory. Passive income is integrated across completion times so a delayed reconnect cannot retroactively multiply earnings. Test coverage: `node tests/strategy.cjs`, `node tests/match-client.cjs`, the generated `supabase/tests/frontier-replay.sql` (20 server/solo states), and `supabase/tests/frontier-security.sql` (RPC isolation and retries, all fixtures rolled back). Generate the replay with `node tests/frontier-replay.cjs`. Apply `supabase/migrations/20260912_orbital_frontier.sql` after the original multiplayer migration.
+
+This is a casual, private-lobby strategy mode. Public matchmaking, online lobby bots, chat, alliances and account-based cross-device match recovery are not included. Solo saves remain local; online lobbies expire after 48 hours. The game remains an original space-company simulation with abstract, fictional signal disruption.
 
 ## New in 2.4
 
