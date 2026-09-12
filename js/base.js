@@ -13,6 +13,16 @@ const baseSystem={
   get(s){return s.spaceport||(s.spaceport=this.fresh());},
   count(s,type){return this.get(s).plots.filter(p=>p.type===type&&p.remaining===0).length;},
   power(s){const plots=this.get(s).plots;return {supply:4+plots.filter(p=>p.type==='solar'&&p.remaining===0).length*8,used:plots.reduce((n,p)=>n+Math.max(0,BASE_BUILDINGS[p.type]?.power||0),0)};},
+  landPoint(countryId){
+    const f=Utils.country(countryId);if(!f||f.properties.region==='Antarctica')return null;
+    const valid=ll=>ll&&ll.every(Number.isFinite)&&Math.abs(ll[0])<=180&&Math.abs(ll[1])<=85&&d3.geoContains(f,ll);
+    for(const ll of [f.properties.center,d3.geoCentroid(f)])if(valid(ll))return ll.slice();
+    // Search each polygon separately, including island countries and overseas territories.
+    const polygons=f.geometry.type==='Polygon'?[f.geometry.coordinates]:f.geometry.coordinates;
+    for(const polygon of polygons){const ring=polygon[0],xs=ring.map(p=>p[0]),ys=ring.map(p=>p[1]);const west=Math.min(...xs),east=Math.max(...xs),south=Math.min(...ys),north=Math.max(...ys);
+      for(let y=1;y<20;y++)for(let x=1;x<20;x++){const ll=[west+(east-west)*x/20,south+(north-south)*y/20];if(valid(ll))return ll;}
+    }return null;
+  },
   claim(s,name,countryId,coordinates){
     const b=this.get(s),f=Utils.country(countryId);
     name=typeof name==='string'?name.trim().replace(/[\x00-\x1f<>]/g,'').slice(0,40):'';

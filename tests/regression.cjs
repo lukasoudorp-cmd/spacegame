@@ -169,4 +169,9 @@ test('Failed backup or import storage leaves the active company unchanged',()=>{
   assert.equal(run('game.importSave(game.state)'),false);assert.equal(run('JSON.stringify(game.state)'),run('beforeFailedImport'));
   run('localStorage.setItem=originalSetItem;');
 });
+test('Company marker follows the saved coordinate and exact-site focus brings it to the front',()=>{
+  fresh();run('baseSystem.claim(game.state,"Far Side Company","USA",[-100,40]);game.map.setMode("globe");game.map.rotation=[-80,0,0];game.map.dirty=true;game.map.draw()');assert.equal(element('companyMapMarker').hidden,true);
+  run('game.map.focusSite()');assert.equal(element('companyMapMarker').hidden,false);assert.equal(element('companyMarkerLabel').textContent,'Far Side Company');near(parseFloat(element('companyMapMarker').style.left),400);near(parseFloat(element('companyMapMarker').style.top),260);
+  run('game.map.setMode("flat")');assert.equal(element('companyMapMarker').hidden,false);
+});
 console.log(`\n${count} regression checks passed. Browser layout is not covered by these checks.`);

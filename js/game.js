@@ -4,7 +4,7 @@ class Game {
   init(){
     const saved=saveSystem.load();this.state=saved||saveSystem.fresh();
     if(!saved){this.state.satellites.push(satelliteSystem.create(this.state,'Scout-1'));const starts=['NLD','USA','BRA','JPN','AUS'];this.state.offers=starts.map((id,i)=>contractSystem.create(this.state,id,i));this.log('Welcome to Orbit Pact. Your Scout-1 is ready for its first assignment.');}
-    this.ui=new UISystem(this);this.ui.init();this.map=new WorldMap(this,(id,point)=>{this.ui.selectCountry(id,false);this.ui.spaceport.pick(id,point);});this.ui.render();
+    this.ui=new UISystem(this);this.ui.init();this.map=new WorldMap(this,(id,point)=>{this.ui.selectCountry(id,false);this.ui.spaceport.pick(id,point);});this.map.focusSite();this.ui.render();
     if(saveSystem.message){this.log(saveSystem.message,'warning');this.ui.toast(saveSystem.message);}
     this.save();
     document.addEventListener('visibilitychange',()=>{this.lastFrame=performance.now();if(document.hidden)this.save();});

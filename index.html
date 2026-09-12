@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#070c14">
   <meta name="description" content="Build your own satellite company. Explore Earth, complete contracts and expand your fleet.">
   <title>Orbit Pact | Mission Control</title>
-  <link rel="stylesheet" href="style.css?v=2.3">
+  <link rel="stylesheet" href="style.css?v=2.3.1">
 </head>
 <body>
   <div class="app">
@@ -49,6 +49,7 @@
           <div class="operations-grid">
             <div class="map-panel panel">
               <div class="map-top"><div><span class="live-dot"></span><strong>EARTH</strong><span class="map-coordinate" id="mapCoordinates">20° N · 15° E</span></div><div class="segmented" aria-label="Map view"><button id="globeButton" class="selected" aria-pressed="true">Globe</button><button id="flatButton" aria-pressed="false">World map</button></div></div>
+              <button id="companyMapMarker" class="company-map-marker" data-page="spaceport" hidden><span class="company-map-dot" aria-hidden="true"></span><span id="companyMarkerLabel" class="company-marker-label"></span></button>
               <canvas id="mapCanvas" tabindex="0" role="img" aria-label="Interactive world map. Drag to rotate, use plus and minus to zoom. Use the country selector next to the map for keyboard access."></canvas>
               <div class="map-tooltip" id="mapTooltip" hidden></div>
               <div class="map-bottom"><div class="map-legend"><span><i class="legend-satellite"></i>Satellite</span><span><i class="legend-mission"></i>Contract</span></div><div class="map-buttons"><button id="zoomOut" class="icon-button" aria-label="Zoom out">−</button><button id="resetMap" class="icon-button" aria-label="Reset map"><span data-icon="focus"></span></button><button id="zoomIn" class="icon-button" aria-label="Zoom in">+</button></div></div>
@@ -86,20 +87,20 @@
   <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
   <noscript><p>Enable JavaScript to play Orbit Pact.</p></noscript>
   <script src="vendor/d3.min.js"></script>
-  <script src="js/world-data.js?v=2.3"></script>
-  <script src="js/locale.js?v=2.3"></script>
-  <script src="js/config.js?v=2.3"></script>
-  <script src="js/satellites.js?v=2.3"></script>
-  <script src="js/upgrades.js?v=2.3"></script>
-  <script src="js/contracts.js?v=2.3"></script>
-  <script src="js/objectives.js?v=2.3"></script>
-  <script src="js/base.js?v=2.3"></script>
-  <script src="js/save.js?v=2.3"></script>
-  <script src="js/cloud-config.js?v=2.3"></script>
-  <script src="js/cloud.js?v=2.3"></script>
-  <script src="js/map.js?v=2.3"></script>
-  <script src="js/base-ui.js?v=2.3"></script>
-  <script src="js/ui.js?v=2.3"></script>
-  <script src="js/game.js?v=2.3"></script>
+  <script src="js/world-data.js?v=2.3.1"></script>
+  <script src="js/locale.js?v=2.3.1"></script>
+  <script src="js/config.js?v=2.3.1"></script>
+  <script src="js/satellites.js?v=2.3.1"></script>
+  <script src="js/upgrades.js?v=2.3.1"></script>
+  <script src="js/contracts.js?v=2.3.1"></script>
+  <script src="js/objectives.js?v=2.3.1"></script>
+  <script src="js/base.js?v=2.3.1"></script>
+  <script src="js/save.js?v=2.3.1"></script>
+  <script src="js/cloud-config.js?v=2.3.1"></script>
+  <script src="js/cloud.js?v=2.3.1"></script>
+  <script src="js/map.js?v=2.3.1"></script>
+  <script src="js/base-ui.js?v=2.3.1"></script>
+  <script src="js/ui.js?v=2.3.1"></script>
+  <script src="js/game.js?v=2.3.1"></script>
 </body>
 </html>

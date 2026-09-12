@@ -16,7 +16,7 @@ class WorldMap {
         if(p.moved){if(this.mode==='globe'){this.rotation[0]+=dx*.3/this.zoom;this.rotation[1]=Utils.clamp(this.rotation[1]-dy*.3/this.zoom,-80,80);}else{this.pan[0]=Utils.clamp(this.pan[0]+dx,-this.width*this.zoom/2,this.width*this.zoom/2);this.pan[1]=Utils.clamp(this.pan[1]+dy,-this.height*this.zoom/2,this.height*this.zoom/2);}this.dirty=true;}p.x=e.clientX;p.y=e.clientY;
       }else if(e.pointerType!=='touch'){const hit=this.hit(e);if(hit?.id!==this.hover?.id){this.hover=hit;this.dirty=true;}if(hit){const rect=c.getBoundingClientRect();this.tooltip.textContent=hit.properties.name;this.tooltip.style.left=`${Math.max(8,Math.min(this.width-195,e.clientX-rect.left+14))}px`;this.tooltip.style.top=`${Math.max(55,Math.min(this.height-80,e.clientY-rect.top-35))}px`;this.tooltip.hidden=false;}else this.tooltip.hidden=true;}
     });
-    c.addEventListener('pointerup',e=>{if(!this.pointer||this.pointer.id!==e.pointerId)return;const moved=this.pointer.moved;this.pointer=null;if(c.hasPointerCapture(e.pointerId))c.releasePointerCapture(e.pointerId);if(!moved){const hit=this.hit(e);this.select(hit?.id||null,false);const rect=c.getBoundingClientRect();const point=hit?this.projection.invert([e.clientX-rect.left,e.clientY-rect.top]):null;this.onSelect(hit?.id||null,point);}});
+    c.addEventListener('pointerup',e=>{if(!this.pointer||this.pointer.id!==e.pointerId)return;const moved=this.pointer.moved;this.pointer=null;if(c.hasPointerCapture(e.pointerId))c.releasePointerCapture(e.pointerId);if(!moved){const hit=this.hit(e);const rect=c.getBoundingClientRect();const point=hit?this.projection.invert([e.clientX-rect.left,e.clientY-rect.top]):null;this.select(hit?.id||null,false);this.onSelect(hit?.id||null,point);}});
     c.addEventListener('pointercancel',()=>{this.pointer=null;});c.addEventListener('pointerleave',()=>{this.hover=null;this.tooltip.hidden=true;this.dirty=true;});
     c.addEventListener('wheel',e=>{e.preventDefault();this.changeZoom(e.deltaY>0?1/1.12:1.12);},{passive:false});
     c.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','Home'].includes(e.key)){e.preventDefault();if(e.key==='+')this.changeZoom(1.2);else if(e.key==='-')this.changeZoom(1/1.2);else if(e.key==='Home')this.reset();else{const dx=e.key==='ArrowLeft'?-8:e.key==='ArrowRight'?8:0,dy=e.key==='ArrowUp'?8:e.key==='ArrowDown'?-8:0;if(this.mode==='globe'){this.rotation[0]+=dx;this.rotation[1]=Utils.clamp(this.rotation[1]+dy,-80,80);}else{this.pan[0]=Utils.clamp(this.pan[0]+dx*4,-this.width*this.zoom/2,this.width*this.zoom/2);this.pan[1]=Utils.clamp(this.pan[1]-dy*4,-this.height*this.zoom/2,this.height*this.zoom/2);}this.dirty=true;}}});
@@ -31,6 +31,17 @@ class WorldMap {
     else this.projection=d3.geoNaturalEarth1().fitExtent([[24,65],[w-24,h-80]],{type:'Sphere'}).precision(.4).rotate([0,0,0]);
     if(this.mode==='flat'){this.projection.scale(this.projection.scale()*this.zoom);const t=this.projection.translate();this.projection.translate([t[0]+this.pan[0],t[1]+this.pan[1]]);}
     this.path=d3.geoPath(this.projection,this.baseCtx);
+  }
+  focusSite(){const site=this.game.state.spaceport?.site;if(!site)return;this.rotation=[-site.coordinates[0],-site.coordinates[1],0];this.zoom=1;this.pan=[0,0];this.selected=site.countryId;this.dirty=true;this.draw();}
+  updateCompanyMarker(){
+    const el=document.getElementById('companyMapMarker'),label=document.getElementById('companyMarkerLabel');
+    const b=this.game.state.spaceport,site=b?.site||this.game.ui?.spaceport?.site;
+    if(!site||!this.visible(site.coordinates)){el.hidden=true;return;}
+    const p=this.projection(site.coordinates);if(!p||p[0]<12||p[0]>this.width-12||p[1]<70||p[1]>this.height-70){el.hidden=true;return;}
+    el.hidden=false;el.style.left=p[0]+'px';el.style.top=p[1]+'px';el.classList.toggle('candidate',!b?.site);
+    const name=b?.site?b.name:'Selected company location';label.textContent=name;el.setAttribute('aria-label',name+'. Open spaceport');
+    const width=Math.min(220,this.width-32);label.style.width=width+'px';label.style.left=Utils.clamp(18,18-p[0],this.width-p[0]-width)+'px';
+    label.style.top=p[1]<110?'20px':'-35px';
   }
   hit(e){if(!this.projection)return null;const rect=this.canvas.getBoundingClientRect(),xy=[e.clientX-rect.left,e.clientY-rect.top];if(this.mode==='globe'&&Math.hypot(xy[0]-this.width/2,xy[1]-this.height*.5)>this.radius)return null;const lonlat=this.projection.invert(xy);if(!lonlat||!lonlat.every(Number.isFinite))return null;if(Math.abs(lonlat[1])>90)return null;return WORLD_DATA.features.find(f=>d3.geoContains(f,lonlat))||null;}
   visible(lonlat){return this.mode==='flat'||d3.geoDistance(lonlat,[-this.rotation[0],-this.rotation[1]])<Math.PI/2;}
@@ -65,7 +76,7 @@ class WorldMap {
   draw(){if(!this.width||!this.height)return;if(this.dirty)this.renderBase();const ctx=this.ctx;ctx.clearRect(0,0,this.width,this.height);ctx.drawImage(this.base,0,0,this.width,this.height);const path=d3.geoPath(this.projection,ctx),state=this.game.state;
     const selectedOffers=state.offers.filter(c=>!this.selected||c.countryId===this.selected);const markers=new Map();for(const c of [...selectedOffers,...state.activeContracts])markers.set(c.countryId,state.activeContracts.includes(c));
     for(const [id,active] of markers){const country=Utils.country(id);if(!country)continue;const ll=country.properties.center;if(!this.visible(ll))continue;const p=this.projection(ll);const color=active?'#91f0c2':'#edc587';ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1;ctx.beginPath();ctx.arc(...p,7,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(...p,2.5,0,Math.PI*2);ctx.fill();if(active){ctx.globalAlpha=.3;ctx.beginPath();ctx.arc(...p,10+(state.playTime/200)%6,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}}
-    const site=state.spaceport?.site;if(site&&this.visible(site.coordinates)){const p=this.projection(site.coordinates);ctx.fillStyle='#91f0c2';ctx.strokeStyle='#91f0c2';ctx.lineWidth=2;ctx.beginPath();ctx.arc(...p,11,0,Math.PI*2);ctx.stroke();ctx.fillRect(p[0]-4,p[1]-4,8,8);ctx.font='12px Consolas, monospace';ctx.textAlign='left';ctx.fillText('HQ · '+state.spaceport.name,p[0]+16,p[1]-12);}
+    this.updateCompanyMarker();
     state.satellites.forEach((sat,i)=>{
       const position=satelliteSystem.position(sat,state.playTime);const trace=Array.from({length:100},(_,n)=>satelliteSystem.position(sat,state.playTime+(n-70)*1800));
       if(i<12){ctx.beginPath();path({type:'LineString',coordinates:trace});ctx.strokeStyle=CONFIG.satelliteTypes[sat.type].color+'50';ctx.lineWidth=.85;ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);}

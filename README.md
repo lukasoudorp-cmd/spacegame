@@ -1,8 +1,12 @@
-# Orbit Pact 2.3
+# Orbit Pact 2.3.1
 
 Build a satellite company, complete contracts and expand your fleet.
 
 [Play Orbit Pact](https://lukasoudorp-cmd.github.io/spacegame/)
+
+## New in 2.3.1
+
+Spaceport now includes a country picker with validated land coordinates. Choose land on map opens the flat map and returns directly to founding after a valid click. A labelled dot marks the selected location and the founded company. Show my company focuses the exact saved location; loading also centres the globe on your company.
 
 ## New in 2.3
 

@@ -36,3 +36,9 @@
 @media(max-width:600px){.site-choice,.spaceport-summary,.site-selection{align-items:stretch;flex-direction:column}.base-stats{grid-template-columns:repeat(2,1fr)}.estate,.plot-detail,.production-panel,.founding-panel{padding:16px}.plot-grid{gap:5px}.land-plot{min-height:90px}.land-plot .icon{width:25px;height:25px}.plot-name{font-size:10px}.production-job{gap:10px;flex-wrap:wrap}.spaceport-summary h2{font-size:24px}}
 
 @media(max-width:380px){.nav-button{padding:10px 5px}.sidebar nav{gap:1px}.brand{padding-right:6px}}
+
+.founding-panel select{width:100%;padding:14px;background:#0a1721;color:var(--text);border:1px solid var(--line);border-radius:8px}
+.company-map-marker{position:absolute;z-index:3;width:24px;height:24px;transform:translate(-50%,-50%);border:0;padding:0;background:transparent;color:#adffd9;cursor:pointer}
+.company-map-marker[hidden]{display:none}.company-map-dot{display:block;position:absolute;inset:3px;border:3px solid #edfff7;border-radius:50%;background:#4ee3a0;box-shadow:0 0 0 5px #4ee3a044,0 2px 10px #000b}
+.company-marker-label{position:absolute;text-align:left;padding:7px 10px;font-size:14px;font-weight:600;line-height:1.35;overflow-wrap:anywhere;background:#081b15f2;border:1px solid #81eeb8;border-radius:7px;box-shadow:0 3px 14px #0008;pointer-events:none}
+.company-map-marker.candidate .company-map-dot{background:var(--amber);box-shadow:0 0 0 5px #ebc68a44}.company-map-marker.candidate .company-marker-label{border-color:var(--amber);color:var(--amber)}
