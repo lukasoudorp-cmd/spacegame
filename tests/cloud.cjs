@@ -7,11 +7,11 @@ const context=vm.createContext({console,Intl,Date,Math,Map,Set,Object,Array,Numb
   localStorage:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v),removeItem:k=>memory.delete(k)},
   fetch:async(url,options)=>{calls.push({url,...options});if(networkError)throw networkError;return {ok:response.ok,json:async()=>response.data};}
 });
-for(const file of ['js/world-data.js','js/locale.js','js/config.js','js/satellites.js','js/contracts.js','js/save.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),context,{filename:file});
+for(const file of ['vendor/d3.min.js','js/world-data.js','js/locale.js','js/config.js','js/satellites.js','js/contracts.js','js/base.js','js/save.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),context,{filename:file});
 vm.runInContext('const CLOUD_CONFIG={url:"https://test.supabase.co",publishableKey:"sb_publishable_test"};',context);
 vm.runInContext(fs.readFileSync(path.join(root,'js/cloud.js'),'utf8'),context,{filename:'js/cloud.js'});
 const run=source=>vm.runInContext(source,context);
-run('const testState=saveSystem.fresh();testState.satellites.push(satelliteSystem.create(testState,"Scout-1"));contractSystem.generate(testState);');
+run('const testState=saveSystem.fresh();testState.satellites.push(satelliteSystem.create(testState,"Scout-1"));contractSystem.generate(testState);baseSystem.claim(testState,"Cloud Company","USA",[-100,40]);baseSystem.build(testState,7,"factory");baseSystem.update(testState,10000);');
 let checks=0;
 async function test(name,fn){await fn();checks++;console.log('PASS '+name);}
 (async()=>{
@@ -19,7 +19,7 @@ async function test(name,fn){await fn();checks++;console.log('PASS '+name);}
     await run('cloudSystem.create(testState)');
     assert.match(run('cloudSystem.connection.code'),/^[a-f0-9]{64}$/);
     assert.equal(run('cloudSystem.connection.revision'),1);
-    const request=JSON.parse(calls[0].body);assert.equal(request.p_revision,0);assert.equal(request.p_code,run('cloudSystem.connection.code'));
+    const request=JSON.parse(calls[0].body);assert.equal(request.p_state.spaceport.name,'Cloud Company');assert.equal(request.p_state.spaceport.plots[1].remaining,20000);assert.equal(request.p_revision,0);assert.equal(request.p_code,run('cloudSystem.connection.code'));
     assert.equal(JSON.stringify(request.p_state).includes(request.p_code),false);
     assert.equal(calls[0].headers.apikey,'sb_publishable_test');assert.equal('Authorization' in calls[0].headers,false);
     assert.equal(run('new CloudSaveSystem(CLOUD_CONFIG).connection.code'),request.p_code);

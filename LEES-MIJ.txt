@@ -140,3 +140,10 @@ DEVELOPER CHECKS
 Run from this folder: node tests/regression.cjs
 These checks cover game logic, map projections and save compatibility.
 They do not cover visual browser layout. Normal play does not need Node.js.
+
+
+SPACEPORT EXPANSION (2.3)
+Open Spaceport and name your company. Choose land on the map, click a country at the point where you want to settle, then click Found company here. Confirm your name and found the company for free.
+Your headquarters and four plots are included. Select an empty owned plot to build a satellite factory (EUR 12,000) and another for a launch pad (EUR 8,000). When construction finishes, order a Scout-1 for EUR 52,500. Once manufacturing finishes, click Launch. The satellite joins your fleet after the countdown.
+Headquarters supplies 4 power. A completed solar array adds 8. Build solar before adding extra factories or research campuses. Buy adjoining land to expand. Research campuses earn one research point per game minute. Mission control speeds up future manufacturing orders.
+The clock controls all construction and production. Pause or hide the tab to stop time. Existing satellites and contracts remain available. Cloud saves include your entire spaceport when you click Save online under Company.

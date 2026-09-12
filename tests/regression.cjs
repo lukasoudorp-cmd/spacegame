@@ -17,8 +17,8 @@ const c=vm.createContext({console,Date,Math,Map,Set,Intl,Number,Object,Array,JSO
   ResizeObserver:class{observe(){}},
   localStorage:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)}
 });
-for(const f of ['vendor/d3.min.js','js/world-data.js','js/locale.js','js/config.js','js/satellites.js','js/upgrades.js','js/contracts.js','js/objectives.js','js/save.js','js/map.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),c,{filename:f});
-vm.runInContext('class UISystem {constructor(game){this.game=game;this.page="operations";}init(){}render(){}updateLive(){}toast(){}selectCountry(){}navigate(){}}',c);
+for(const f of ['vendor/d3.min.js','js/world-data.js','js/locale.js','js/config.js','js/satellites.js','js/upgrades.js','js/contracts.js','js/objectives.js','js/base.js','js/save.js','js/map.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),c,{filename:f});
+vm.runInContext('class UISystem {constructor(game){this.game=game;this.page="operations";this.spaceport={pick(){}};}init(){}render(){}updateLive(){}toast(){}selectCountry(){}navigate(){}}',c);
 vm.runInContext(fs.readFileSync(path.join(root,'js/game.js'),'utf8'),c,{filename:'js/game.js'});
 const run=source=>vm.runInContext(source,c);
 const near=(a,b,tolerance=1e-6)=>assert.ok(Math.abs(a-b)<=tolerance,`${a} != ${b}`);
@@ -28,7 +28,7 @@ function fresh(){run('game.state=saveSystem.fresh();game.state.satellites.push(s
 
 test('All entrypoint assets exist and all authored JavaScript parses',()=>{
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  for(const m of html.matchAll(/(?:src|href)="([^"#]+)"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
+  for(const m of html.matchAll(/(?:src|href)="([^"#]+)"/g))assert.ok(fs.existsSync(path.join(root,m[1].split("?")[0])),m[1]);
   for(const file of fs.readdirSync(path.join(root,'js')).filter(f=>f.endsWith('.js')))new vm.Script(fs.readFileSync(path.join(root,'js',file),'utf8'),{filename:file});
   const sources=html+fs.readFileSync(path.join(root,'js/ui.js'),'utf8');
   const ids=new Set([...sources.matchAll(/\bid="([a-zA-Z][\w-]*)"/g)].map(m=>m[1]));

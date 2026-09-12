@@ -1,8 +1,23 @@
-# Orbit Pact 2.2
+# Orbit Pact 2.3
 
 Build a satellite company, complete contracts and expand your fleet.
 
 [Play Orbit Pact](https://lukasoudorp-cmd.github.io/spacegame/)
+
+## New in 2.3
+
+- Found a named company at an actual land coordinate selected on the globe or world map.
+- Free headquarters and four starting plots, expandable to a 5 by 5 spaceport.
+- Build solar arrays, satellite factories, launch pads, research campuses and mission control.
+- Construction reserves power and completes over game time.
+- Manufacture satellites at 70% of external cost, then command a launch from your own pad.
+- Research campuses produce research; mission control accelerates future factory orders.
+- Existing orbital fleets remain available. External suppliers still offer immediate launches.
+- Land, buildings, production, launches and research progress survive local and cloud save transfers.
+
+Start in **Spaceport**, enter a name, choose land on the map and found your company. Build a factory and launch pad first. Keep your starter satellite earning through contracts while construction runs. This is a fictional single-player simulation; plots are not shared or contested by other players.
+
+Run `node tests/spaceport.cjs` for construction, land ownership, power, production, launch and save checks. UI rendering checks use a lightweight DOM stub; full browser layout is not covered.
 
 ## New in 2.2
 

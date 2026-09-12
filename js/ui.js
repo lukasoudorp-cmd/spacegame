@@ -21,7 +21,7 @@ const ICON_PATHS={
 };
 const icon=name=>`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name]||ICON_PATHS.globe}</svg>`;
 class UISystem{
-  constructor(game){this.game=game;this.page='operations';this.countryId=null;this.dialog=document.getElementById('detailDialog');this.openOffer=null;}
+  constructor(game){this.game=game;this.page='operations';this.countryId=null;this.dialog=document.getElementById('detailDialog');this.openOffer=null;this.spaceport=new SpaceportUI(this);}
   get state(){return this.game.state;}
   init(){
     document.querySelectorAll('[data-icon]').forEach(el=>el.innerHTML=icon(el.dataset.icon));
@@ -30,6 +30,7 @@ class UISystem{
     WORLD_DATA.features.filter(f=>f.properties.region!=='Antarctica').sort((a,b)=>a.properties.name.localeCompare(b.properties.name,'en')).forEach(f=>{const o=document.createElement('option');o.value=f.id;o.textContent=f.properties.name;select.appendChild(o);});
     select.addEventListener('change',()=>this.selectCountry(select.value||null));
     document.addEventListener('click',e=>{
+      const base=e.target.closest('[data-base-action]');if(base&&!base.disabled){this.spaceport.act(base.dataset.baseAction,base);return;}
       const nav=e.target.closest('[data-page]');if(nav){this.navigate(nav.dataset.page);return;}
       const button=e.target.closest('[data-action]');if(!button||button.disabled)return;const id=Number(button.dataset.id);
       switch(button.dataset.action){case'claim':this.game.claimObjective(button.dataset.key);break;case'offer':this.showContract(id);break;case'buy':this.game.buySatellite(button.dataset.type);break;case'upgrade':this.game.buyUpgrade(button.dataset.key);break;case'repair':this.game.repair(id);break;case'satellite':this.showSatellite(id);break;case'country':this.navigate('operations');this.selectCountry(button.dataset.country);break;}
@@ -56,7 +57,7 @@ class UISystem{
     document.querySelector('.brand').addEventListener('click',e=>{e.preventDefault();this.navigate('operations');});
   }
   navigate(page){
-    const copy={operations:['Mission control','ORBITAL OPERATIONS','The world within reach.','Choose a contract. Put your satellite to work.'],contracts:['Contracts','CONTRACT NETWORK','Your next mission.','Deliver data, earn money and build your reputation.'],fleet:['My fleet','FLEET MANAGEMENT','Ready to expand your orbit.','Manage your satellites and expand your capacity.'],upgrades:['Research','TECHNOLOGY & DEVELOPMENT','Improve every mission.','Invest your research points in your entire fleet.'],objectives:['Objectives','COMPANY MILESTONES','Give every mission a purpose.','Reach milestones, unlock new equipment and claim rewards.'],company:['Company','COMPANY OVERVIEW','From first launch to global operator.','View your results and your next milestone.'],log:['Activity log','OPERATION HISTORY','Your activity at a glance.','Launches, contracts and company developments.']};
+    const copy={spaceport:['Spaceport','LAND & LAUNCH OPERATIONS','Your company. Your launch site.','Build on your land. Manufacture satellites. Launch your own fleet.'],operations:['Mission control','ORBITAL OPERATIONS','The world within reach.','Choose a contract. Put your satellite to work.'],contracts:['Contracts','CONTRACT NETWORK','Your next mission.','Deliver data, earn money and build your reputation.'],fleet:['My fleet','FLEET MANAGEMENT','Ready to expand your orbit.','Manage your satellites and expand your capacity.'],upgrades:['Research','TECHNOLOGY & DEVELOPMENT','Improve every mission.','Invest your research points in your entire fleet.'],objectives:['Objectives','COMPANY MILESTONES','Give every mission a purpose.','Reach milestones, unlock new equipment and claim rewards.'],company:['Company','COMPANY OVERVIEW','From first launch to global operator.','View your results and your next milestone.'],log:['Activity log','OPERATION HISTORY','Your activity at a glance.','Launches, contracts and company developments.']};
     if(!copy[page])return;this.page=page;const [label,eyebrow,title,description]=copy[page];
     for(const [id,text]of Object.entries({pageLabel:label,pageEyebrow:eyebrow,pageTitle:title,pageDescription:description}))document.getElementById(id).textContent=text;
     document.querySelectorAll('.page').forEach(el=>{const active=el.id===`page-${page}`;el.hidden=!active;el.classList.toggle('active',active);});
@@ -66,7 +67,7 @@ class UISystem{
   selectCountry(id,focus=true){this.countryId=Utils.country(id)?id:null;document.getElementById('countrySelect').value=this.countryId||'';this.game.map?.select(this.countryId,focus);this.renderMapOffers();}
   render(){
     const focused=document.activeElement,focusData=focused?.dataset.action?{...focused.dataset}:null;
-    this.renderObjectives();this.renderMapOffers();this.renderActive('activeMissions');this.renderActive('contractsActive');
+    this.spaceport.renderMapChoice();if(this.page==='spaceport')this.spaceport.render();this.renderObjectives();this.renderMapOffers();this.renderActive('activeMissions');this.renderActive('contractsActive');
     if(this.page==='contracts')this.renderContracts();if(this.page==='fleet')this.renderFleet();if(this.page==='upgrades')this.renderUpgrades();if(this.page==='company')this.renderCompany();if(this.page==='log')this.renderLog();
     this.updateLive();
     if(focusData&&!document.contains(focused)){const buttons=Array.from(document.querySelectorAll('[data-action]'));const match=buttons.find(b=>Object.entries(focusData).every(([k,v])=>b.dataset[k]===v));if(match&&!match.disabled)match.focus({preventScroll:true});}
@@ -103,7 +104,7 @@ class UISystem{
     }).join('');
     document.getElementById('shopList').innerHTML=Object.entries(CONFIG.satelliteTypes).map(([key,s])=>{
       const unlocked=satelliteSystem.isUnlocked(state,key);
-      return `<article class="card ${unlocked?'':'hardware-locked'}"><div class="hardware-header"><div style="color:${s.color}">${icon('satellite')}</div><div class="eyebrow">${s.role} / CLASS ${s.quality}</div><h3>${s.name}</h3><p>${s.description}</p></div><p class="specialty-note">${this.specialtyText(key)}</p>${unlocked?'':`<p class="unlock-note">Complete ${s.unlockContracts} contracts to unlock · ${Math.min(state.completedContracts,s.unlockContracts)} / ${s.unlockContracts}</p>`}<div class="card-stats"><div class="card-stat"><span>Base coverage</span><strong>${s.coverage}%</strong></div><div class="card-stat"><span>Base efficiency</span><strong>${Math.round(s.efficiency*100)}%</strong></div><div class="card-stat"><span>Base maintenance / month</span><strong>${Utils.money(s.maintenance)}</strong></div></div><div class="reward" style="color:${s.color}">${Utils.money(s.price)}</div><p class="reward-label">Purchase includes launch</p><div class="card-actions"><button class="${unlocked?'primary-button':'outline-button'}" data-action="buy" data-type="${key}" data-price="${s.price}" ${unlocked?'':'data-locked="true" disabled'}>${unlocked?'Buy & launch':'Locked'} ${icon('arrow')}</button></div></article>`;
+      return `<article class="card ${unlocked?'':'hardware-locked'}"><div class="hardware-header"><div style="color:${s.color}">${icon('satellite')}</div><div class="eyebrow">${s.role} / CLASS ${s.quality}</div><h3>${s.name}</h3><p>${s.description}</p></div><p class="specialty-note">${this.specialtyText(key)}</p>${unlocked?'':`<p class="unlock-note">Complete ${s.unlockContracts} contracts to unlock · ${Math.min(state.completedContracts,s.unlockContracts)} / ${s.unlockContracts}</p>`}<div class="card-stats"><div class="card-stat"><span>Base coverage</span><strong>${s.coverage}%</strong></div><div class="card-stat"><span>Base efficiency</span><strong>${Math.round(s.efficiency*100)}%</strong></div><div class="card-stat"><span>Base maintenance / month</span><strong>${Utils.money(s.maintenance)}</strong></div></div><div class="reward" style="color:${s.color}">${Utils.money(s.price)}</div><p class="reward-label">External supplier · immediate launch</p><div class="card-actions"><button class="${unlocked?'primary-button':'outline-button'}" data-action="buy" data-type="${key}" data-price="${s.price}" ${unlocked?'':'data-locked="true" disabled'}>${unlocked?'Buy externally':'Locked'} ${icon('arrow')}</button></div></article>`;
     }).join('');
   }
   renderUpgrades(){
@@ -117,7 +118,7 @@ class UISystem{
   renderLog(){document.getElementById('logList').innerHTML=this.state.log.slice().reverse().map(l=>`<div class="log-entry ${l.type}"><time>${Utils.clock(l.time)}</time><span>${Utils.escape(l.message)}</span></div>`).join('')||'<div class="log-entry">No activity yet.</div>';}
   updateLive(){
     const s=this.state,p=Utils.progress(s);const set=(id,text)=>{const el=document.getElementById(id);if(el&&el.textContent!==String(text))el.textContent=text;};
-    set('moneyDisplay',Utils.money(s.money));set('reputationDisplay',s.reputation);set('researchDisplay',s.research);set('missionClock',Utils.clock(s.playTime));set('activeCount',s.activeContracts.length);set('runningBadge',s.activeContracts.length);set('expectedProfit',Utils.money(s.activeContracts.reduce((sum,c)=>sum+c.reward-c.cost,0)));set('maintenanceDisplay',Utils.money(satelliteSystem.monthlyCost(s)));set('navOfferCount',s.offers.length);set('sidebarLevel',`Level ${s.level} · ${CONFIG.levelNames[s.level-1]}`);set('nextLevelHint',s.level===5?'Highest company level reached':`${Utils.money(p.remaining)} to level ${s.level+1}`);set('systemStatus',s.paused?'SIMULATION PAUSED':'SYSTEMS OPERATIONAL');set('companyPlayTime',Utils.clock(s.playTime));set('totalCosts',Utils.money(s.totalCosts));
+    set('companyNameLabel',s.spaceport?.site?s.spaceport.name:'Orbit Pact');set('moneyDisplay',Utils.money(s.money));set('reputationDisplay',s.reputation);set('researchDisplay',s.research);set('missionClock',Utils.clock(s.playTime));set('activeCount',s.activeContracts.length);set('runningBadge',s.activeContracts.length);set('expectedProfit',Utils.money(s.activeContracts.reduce((sum,c)=>sum+c.reward-c.cost,0)));set('maintenanceDisplay',Utils.money(satelliteSystem.monthlyCost(s)));set('navOfferCount',s.offers.length);set('sidebarLevel',`Level ${s.level} · ${CONFIG.levelNames[s.level-1]}`);set('nextLevelHint',s.level===5?'Highest company level reached':`${Utils.money(p.remaining)} to level ${s.level+1}`);set('systemStatus',s.paused?'SIMULATION PAUSED':'SYSTEMS OPERATIONAL');set('companyPlayTime',Utils.clock(s.playTime));set('totalCosts',Utils.money(s.totalCosts));
     document.getElementById('sidebarProgress').style.width=p.percent+'%';document.getElementById('systemDot').style.background=s.paused?'var(--amber)':'var(--mint)';
     const free=satelliteSystem.available(s).length;document.getElementById('freeSatellites').innerHTML=`${free} <small>/ ${s.satellites.length}</small>`;
     const pause=document.getElementById('pauseButton');if(pause.dataset.paused!==String(s.paused)){pause.innerHTML=icon(s.paused?'play':'pause');pause.dataset.paused=s.paused;pause.setAttribute('aria-label',s.paused?'Resume game':'Pause game');pause.title=s.paused?'Resume':'Pause';}set('speedButton',s.speed+'×');
@@ -125,7 +126,7 @@ class UISystem{
     document.querySelectorAll('[data-price]').forEach(el=>{el.disabled=Boolean(el.dataset.maxed)||Boolean(el.dataset.locked)||s.money<Number(el.dataset.price)||s.research<Number(el.dataset.research||0);if(el.dataset.locked)el.title='Complete 3 contracts to unlock this satellite.';else if(el.disabled&&!el.dataset.maxed)el.title=s.money<Number(el.dataset.price)?'Not enough funds':'Not enough research points';else el.title='';});
     document.querySelectorAll('[data-action="repair"]').forEach(el=>{const sat=s.satellites.find(v=>v.id===Number(el.dataset.id));if(!sat)return;const cost=satelliteSystem.repairCost(sat);el.textContent=`Repair · ${Utils.money(cost)}`;el.disabled=sat.activeContract!==null||sat.health>=99.99||s.money<cost;el.title=sat.activeContract!==null?'Wait for the contract to finish.':'';});
     document.querySelectorAll('[data-health]').forEach(el=>{const sat=s.satellites.find(v=>v.id===Number(el.dataset.health));if(sat)el.textContent=sat.health.toFixed(1)+'%';});document.querySelectorAll('[data-health-bar]').forEach(el=>{const sat=s.satellites.find(v=>v.id===Number(el.dataset.healthBar));if(sat)el.style.width=sat.health+'%';});
-    this.updateCloudStatus();
+    this.spaceport.live();this.updateCloudStatus();
     document.getElementById('restoreSaveButton').hidden=!saveSystem.hasBackup();
     if(this.openOffer&&this.dialog.open)this.updateQuote();
   }
@@ -160,9 +161,9 @@ class UISystem{
     document.getElementById('cloudLoadButton').disabled=busy||!connection?.revision;
   }
   async cloudAction(action){
-    if(this.cloudBusy)return;this.cloudBusy=true;this.updateCloudStatus();
+    if(this.cloudBusy)return;this.cloudBusy=true;this.spaceport.live();this.updateCloudStatus();
     try{await action();}catch(e){this.toast(e.message||'The cloud action could not be completed.',true);}
-    finally{this.cloudBusy=false;this.updateCloudStatus();}
+    finally{this.cloudBusy=false;this.spaceport.live();this.updateCloudStatus();}
   }
   enterCloudCode(){
     this.openDialog('Load your cloud save',`<p>Enter the recovery code from your other device. You can review the saved company before replacing this game.</p><label class="field-label" for="cloudCodeInput">Private recovery code</label><input id="cloudCodeInput" class="save-code-input" type="password" autocomplete="off" spellcheck="false" maxlength="90" placeholder="Paste your 64-character code"><p id="cloudCodeMessage" class="dialog-message" role="status"></p>`,'CLOUD SAVE');
@@ -189,7 +190,7 @@ class UISystem{
   disconnectCloud(){
     this.openDialog('Disconnect this device?',`<p>Your local game and online save will stay intact. Keep your recovery code to connect to the cloud save again.</p>`,'CLOUD SAVE');
     this.dialogButton('Cancel',()=>this.dialog.close());
-    this.dialogButton('Disconnect',()=>{try{cloudSystem.remember(null);this.dialog.close();this.updateCloudStatus();}catch(e){this.toast('This browser could not forget the cloud connection.',true);}});
+    this.dialogButton('Disconnect',()=>{try{cloudSystem.remember(null);this.dialog.close();this.spaceport.live();this.updateCloudStatus();}catch(e){this.toast('This browser could not forget the cloud connection.',true);}});
   }
   exportSave(){
     try{

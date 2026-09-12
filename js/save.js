@@ -31,7 +31,7 @@ const saveSystem = {
     state.log=(Array.isArray(input.log)?input.log:[]).filter(l=>l&&typeof l.message==='string'&&Number.isFinite(l.time)).slice(-100).map(l=>({message:translateLegacyLog(l.message.slice(0,500)),time:Math.max(0,l.time),type:['success','warning','info'].includes(l.type)?l.type:'info'}));
     state.servedCountries=[...new Set([...(Array.isArray(input.servedCountries)?input.servedCountries:[]),...state.history.map(c=>c.countryId)].filter(id=>Utils.country(id)))];
     state.claimedObjectives=[...new Set((Array.isArray(input.claimedObjectives)?input.claimedObjectives:[]).filter(id=>CONFIG.objectives.some(g=>g.id===id)))];
-    state.level=Utils.level(state.totalMoneyEarned);state.paused=Boolean(input.paused);state.speed=input.speed===3?3:1;return state;
+    state.spaceport=baseSystem.validate(input.spaceport);state.level=Utils.level(state.totalMoneyEarned);state.paused=Boolean(input.paused);state.speed=input.speed===3?3:1;return state;
   },
   exportText(state) {
     return JSON.stringify({format:'orbit-pact-save',formatVersion:1,exportedAt:new Date().toISOString(),state:{...state,version:2}},null,2);
