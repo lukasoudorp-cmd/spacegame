@@ -147,3 +147,11 @@ Open Spaceport and name your company. Choose land on the map, click a country at
 Your headquarters and four plots are included. Select an empty owned plot to build a satellite factory (EUR 12,000) and another for a launch pad (EUR 8,000). When construction finishes, order a Scout-1 for EUR 52,500. Once manufacturing finishes, click Launch. The satellite joins your fleet after the countdown.
 Headquarters supplies 4 power. A completed solar array adds 8. Build solar before adding extra factories or research campuses. Buy adjoining land to expand. Research campuses earn one research point per game minute. Mission control speeds up future manufacturing orders.
 The clock controls all construction and production. Pause or hide the tab to stop time. Existing satellites and contracts remain available. Cloud saves include your entire spaceport when you click Save online under Company.
+
+
+MULTIPLAYER AND SOLO MATCHES (2.4)
+At the start screen, enter your company name and choose a headquarters country.
+Multiplayer: Create lobby, share the eight-character code with friends, and have them use Join with code. Choose different countries. Everyone clicks Ready. The host clicks Start match.
+Solo: choose Easy, Normal or Hard and click Start solo match. You face three bots with equal starting resources.
+Matches have separate progress from free play. Start with EUR 100,000 and one satellite. Accept contracts from the shared market, build your spaceport, and be the first to EUR 250,000 contract revenue. A match lasts at most 30 minutes. Build a factory and pad before launching extra satellites. Solar provides power; a research lab makes contracts faster.
+Use Menu to return to the start screen. Resume solo match or Resume online lobby restores your match on this browser. Online time continues for everyone even when a tab is closed. Online lobbies expire after 48 hours. Your free-play company remains available under Continue free play.

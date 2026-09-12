@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#070c14">
   <meta name="description" content="Build your own satellite company. Explore Earth, complete contracts and expand your fleet.">
   <title>Orbit Pact | Mission Control</title>
-  <link rel="stylesheet" href="style.css?v=2.3.1">
+  <link rel="stylesheet" href="style.css?v=2.4">
 </head>
 <body>
   <div class="app">
@@ -42,7 +42,7 @@
       </header>
 
       <main>
-        <div class="page-heading"><div><p class="eyebrow" id="pageEyebrow">ORBITAL OPERATIONS</p><h1 id="pageTitle">The world within reach.</h1><p id="pageDescription">Choose a contract. Put your satellite to work.</p></div><div class="time-controls"><span id="missionClock">00:00:00</span><button id="pauseButton" class="icon-button" aria-label="Pause game" title="Pause"><span data-icon="pause"></span></button><button id="speedButton" class="small-button" aria-label="Change game speed">1×</button></div></div>
+        <div class="page-heading"><div><p class="eyebrow" id="pageEyebrow">ORBITAL OPERATIONS</p><h1 id="pageTitle">The world within reach.</h1><p id="pageDescription">Choose a contract. Put your satellite to work.</p></div><div class="time-controls"><button id="matchMenuButton" class="outline-button">Play modes</button><span id="missionClock">00:00:00</span><button id="pauseButton" class="icon-button" aria-label="Pause game" title="Pause"><span data-icon="pause"></span></button><button id="speedButton" class="small-button" aria-label="Change game speed">1×</button></div></div>
 
         <section id="page-operations" class="page active" aria-label="Mission control">
           <div id="siteChoice" class="panel site-choice"></div><div id="nextObjective" class="objective-directive"></div>
@@ -85,22 +85,25 @@
   </div>
   <dialog id="detailDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><p class="eyebrow" id="dialogEyebrow">MISSION BRIEFING</p><button class="icon-button" id="closeDialog" aria-label="Close">×</button></div><h2 id="dialogTitle"></h2><div id="dialogBody"></div><div id="dialogActions" class="dialog-actions"></div></dialog>
   <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+  <section id="matchRoot" aria-label="Game modes and matches" hidden></section>
   <noscript><p>Enable JavaScript to play Orbit Pact.</p></noscript>
   <script src="vendor/d3.min.js"></script>
-  <script src="js/world-data.js?v=2.3.1"></script>
-  <script src="js/locale.js?v=2.3.1"></script>
-  <script src="js/config.js?v=2.3.1"></script>
-  <script src="js/satellites.js?v=2.3.1"></script>
-  <script src="js/upgrades.js?v=2.3.1"></script>
-  <script src="js/contracts.js?v=2.3.1"></script>
-  <script src="js/objectives.js?v=2.3.1"></script>
-  <script src="js/base.js?v=2.3.1"></script>
-  <script src="js/save.js?v=2.3.1"></script>
-  <script src="js/cloud-config.js?v=2.3.1"></script>
-  <script src="js/cloud.js?v=2.3.1"></script>
-  <script src="js/map.js?v=2.3.1"></script>
-  <script src="js/base-ui.js?v=2.3.1"></script>
-  <script src="js/ui.js?v=2.3.1"></script>
-  <script src="js/game.js?v=2.3.1"></script>
+  <script src="js/world-data.js?v=2.4"></script>
+  <script src="js/locale.js?v=2.4"></script>
+  <script src="js/config.js?v=2.4"></script>
+  <script src="js/satellites.js?v=2.4"></script>
+  <script src="js/upgrades.js?v=2.4"></script>
+  <script src="js/contracts.js?v=2.4"></script>
+  <script src="js/objectives.js?v=2.4"></script>
+  <script src="js/base.js?v=2.4"></script>
+  <script src="js/save.js?v=2.4"></script>
+  <script src="js/cloud-config.js?v=2.4"></script>
+  <script src="js/cloud.js?v=2.4"></script>
+  <script src="js/map.js?v=2.4"></script>
+  <script src="js/base-ui.js?v=2.4"></script>
+  <script src="js/ui.js?v=2.4"></script>
+  <script src="js/match-rules.js?v=2.4"></script>
+  <script src="js/match.js?v=2.4"></script>
+  <script src="js/game.js?v=2.4"></script>
 </body>
 </html>

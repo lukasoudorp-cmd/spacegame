@@ -1,8 +1,20 @@
-# Orbit Pact 2.3.1
+# Orbit Pact 2.4
 
 Build a satellite company, complete contracts and expand your fleet.
 
 [Play Orbit Pact](https://lukasoudorp-cmd.github.io/spacegame/)
+
+## New in 2.4
+
+The start screen offers Multiplayer (create/join with an eight-character code), Solo vs bots (easy/normal/hard), and the existing Free play company.
+
+Competitive matches are a separate ruleset: 2–4 online companies or one player against three bots, equal EUR 100,000 starting funds, one satellite, a 16-plot base, and a shared contract market. First to EUR 250,000 gross contract revenue wins. After 30 minutes the highest revenue wins; exact ties use stable player ID order. Build a factory and pad to produce and launch satellites; solar adds power and a lab reduces mission times. Bot difficulty changes decision intervals and contract selection, not starting money.
+
+Online time, money, ownership and winners are calculated in Postgres. The browser sends commands rather than financial state. Updates poll every 2.5 seconds. A private 256-bit player token is separate from the shareable lobby code; only its hash is stored in the membership table. Command sequence numbers prevent a retry from charging twice. Tables have RLS enabled and no direct anonymous access. Lobbies expire after 48 hours. Returning to the menu does not stop an online match. Resume online lobby reconnects on the same browser. Online matches are not copied into the old cloud-save slot.
+
+Solo matches save separately on this device and stop while hidden or in the menu. Existing sandbox saves are preserved. Run `node tests/matches.cjs` and the rollback-only `supabase/tests/multiplayer.sql` for match coverage. Migration: `supabase/migrations/20260912_multiplayer.sql`.
+
+Known scope: no chat, matchmaking queue, cross-device player login, ranked ladder, or bots inside online lobbies. This is the first competitive match mode, alongside the fuller free-play progression.
 
 ## New in 2.3.1
 
