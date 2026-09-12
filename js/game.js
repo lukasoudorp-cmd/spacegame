@@ -9,7 +9,7 @@ class Game {
     this.save();
     document.addEventListener('visibilitychange',()=>{this.lastFrame=performance.now();if(document.hidden)this.save();});
     window.addEventListener('pagehide',()=>this.save());window.addEventListener('beforeunload',()=>this.save());
-    const frame=now=>{const dt=this.lastFrame?Math.min(1000,Math.max(0,now-this.lastFrame)):0;this.lastFrame=now;if(!document.hidden){if(!this.state.paused)this.update(dt*this.state.speed);if(now-this.lastUI>=250){this.ui.updateLive();this.lastUI=now;}if(this.ui.page==='operations'&&now-(this.lastMap||0)>33){this.map.draw();this.lastMap=now;}if(now-this.lastSave>CONFIG.saveInterval){this.save();this.lastSave=now;}}this.frame=requestAnimationFrame(frame);};this.frame=requestAnimationFrame(frame);if(typeof MatchController!=='undefined'){this.matches=new MatchController(this);this.matches.init();}
+    const frame=now=>{const dt=this.lastFrame?Math.min(1000,Math.max(0,now-this.lastFrame)):0;this.lastFrame=now;if(!document.hidden&&(!this.matches||this.matches.screen==='sandbox')){if(!this.state.paused)this.update(dt*this.state.speed);if(now-this.lastUI>=250){this.ui.updateLive();this.lastUI=now;}if(this.ui.page==='operations'&&now-(this.lastMap||0)>33){this.map.draw();this.lastMap=now;}if(now-this.lastSave>CONFIG.saveInterval){this.save();this.lastSave=now;}}this.frame=requestAnimationFrame(frame);};this.frame=requestAnimationFrame(frame);if(typeof MatchController!=='undefined'){this.matches=new MatchController(this);this.matches.init();}
   }
   update(dt){
     if(!Number.isFinite(dt)||dt<=0||this.state.paused)return;
