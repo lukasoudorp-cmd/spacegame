@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://orbitalpact.com/sitemap.xml

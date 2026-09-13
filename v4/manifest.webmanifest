@@ -1,0 +1,11 @@
+{
+  "name": "Orbital Pact",
+  "short_name": "Orbital Pact",
+  "description": "Browser strategy game about satellites, contracts and orbital competition.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080d15",
+  "theme_color": "#080d15",
+  "icons": [],
+  "scope": "./"
+}

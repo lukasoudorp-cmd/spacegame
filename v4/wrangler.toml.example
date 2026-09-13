@@ -1,0 +1,11 @@
+name = "orbital-pact-match-server"
+main = "backend/cloudflare/worker.js"
+compatibility_date = "2026-09-01"
+
+[[durable_objects.bindings]]
+name = "MATCH_ROOM"
+class_name = "MatchRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MatchRoom"]

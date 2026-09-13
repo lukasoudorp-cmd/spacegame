@@ -1,0 +1,38 @@
+ORBITAL PACT 4.0: HERSTELDE ONTWIKKELVERSIE — 13 SEPTEMBER 2026
+
+HERSTELD IN DEZE RONDE
+- Werkruimte toegankelijk; originele ZIP succesvol uitgepakt.
+- Synthetic Aperture en Autonomous Routing veranderen de contractberekening.
+- Precision Orbits en Orbital Swarm veranderen de daadwerkelijke invloed.
+  Orbital Swarm geeft nu +2 invloed per relay; beschrijving aangepast.
+- Deep Band verhoogt de score- en onderzoeksbeloning van gezamenlijke projecten.
+- Donaties worden bij de ontvangende bot opgeteld.
+- Sabotage gebruikt de verdediging van de ontvanger, niet die van de aanvaller.
+- Bots kunnen elke drie spelminuten een netwerkverstoring uitvoeren.
+- Signal Hardening vermindert schade; Zero Trust blokkeert de eerste aanval.
+- Alle vier winstvoorwaarden worden ook voor rivalen beoordeeld.
+- Bedrijfswaarde telt de actuele bezittingen, niet ook nog eens alle omzet.
+- Keep exploring blijft na opslaan en laden oneindig doorgaan.
+- Solo heeft standaard een expliciete Endless campaign-keuze.
+- De gekozen spelsnelheid slow/standard/fast heeft nu effect.
+- Clientgekozen contractbeloningen worden door de concept-Worker geweigerd.
+- Live multiplayer blijft expliciet uitgeschakeld zolang de integratie ontbreekt.
+
+CONTROLES
+17 regression + 6 v3-systems + 9 v4-strategy + 9 v4-recovery = 41 geslaagd.
+Dit zijn Node-controles, geen geslaagde volledige browser- of onlinetest.
+De bestaande v4-bestandscontrole bewijst geen serverbeveiliging.
+
+NOG AF TE MAKEN
+1. Eén gedeelde servergestuurde multiplayerstaat, met alle acties en beloningen.
+2. Accounts, echte authenticatie, gebruikersnamen en blijvende statistieken.
+3. Lobbycapaciteit, hostrechten, ready-flow, spectators en identiteitsvast reconnect.
+4. Alliantieverzoeken met accepteren/weigeren en echte spelertransacties.
+5. Volledige balanscontrole, kaartbezit en botgedrag, save-validatie en vertaling.
+6. Volledige browser-, mobiele en twee-spelerintegratietests.
+7. Hosting en domein. Bestaande live GitHub-game niet vervangen in deze ronde.
+8. Daarna de grote visuele vernieuwing en het eigen herkenbare lettertype.
+
+GEBRUIKERSVOLGORDE
+Eerst functionaliteit afmaken en testen; daarna de nieuwe uitstraling.
+Deze ZIP is een hersteld werkcheckpoint en nadrukkelijk geen final release.

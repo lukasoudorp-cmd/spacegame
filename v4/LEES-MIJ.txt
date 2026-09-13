@@ -1,0 +1,34 @@
+ORBITAL PACT 4.0 ONTWIKKELVERSIE
+========================
+
+Dit is een kopie van de onafgemaakte 4.0-code. Lees STATUS-4.0.txt voor wat
+nog ontbreekt. Deze ZIP bevat nog geen werkende publieke multiplayergame.
+
+STARTEN OP JE CHROMEBOOK
+1. Pak het volledige ZIP-bestand uit.
+2. Houd de mappen js, vendor, backend en tests naast index.html.
+3. Open index.html in Chrome.
+4. Kies Solo Command. Je hebt voor solo geen installatie of account nodig.
+
+DOEL
+Kies één van vier winstvoorwaarden: 60 procent orbital influence, een bedrijf
+van EUR 2.000.000, achttien ground relays of 1.000 Pact Score. Met Endless campaign blijft solo onbeperkt doorgaan. Zet deze keuze uit voor een wedstrijd met een winnaar. Rivalen bouwen
+elke vijftien spelseconden verder. Op Hard en Expert groeien ze sneller.
+
+KAART
+Klik op een land en bouw daar een relay. Gekleurde landen horen bij jou of een
+rivaal. Met Fog of Intelligence zie je rivalen pas via onderzoek of allianties.
+Satellieten en relays verschijnen zichtbaar op de kaart.
+
+ONLINE
+De code bevat solo met computerrivalen. De online adapter, server en database
+staan in de ZIP, maar moeten verder worden gebouwd en geïntegreerd. Alleen
+Supabase en Cloudflare configureren is daarvoor onvoldoende.
+
+TESTEN
+Voer in deze map uit:
+node tests/regression.cjs
+node tests/v3-systems.cjs
+node tests/v4-strategy.cjs
+
+Herstelronde: 41 Node-controles geslaagd. Zie STATUS-4.0.txt.
